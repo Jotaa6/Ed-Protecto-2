@@ -21,7 +21,7 @@ using namespace std;
  * @field  x         coordenada X
  * @field  y         coordenada Y
  * @field  z         coordenada Z
- * @field  isLocal   true si fue creada por el usuario, false si viene de la API
+ * @field  isLocal   false si viene de la API, true si fue creada por el usuario via CRUD
  * @field  siguiente puntero al siguiente Galaxy en la lista enlazada
  */
 struct Galaxy {
@@ -43,7 +43,7 @@ struct Galaxy {
  * @field  x        coordenada X
  * @field  y        coordenada Y
  * @field  z        coordenada Z
- * @field  isLocal  si fue creada por el usuario
+ * @field  isLocal  false si viene de la API, true si fue creada por el usuario
  */
 struct GalaxyFile {
     int   id;
