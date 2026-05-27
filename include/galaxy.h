@@ -45,7 +45,9 @@ struct Galaxy {
  * @field  x        coordenada X
  * @field  y        coordenada Y
  * @field  z        coordenada Z
- * @field  isLocal  false si viene de la API, true si fue creada por el usuario
+ * @field  isLocal  false si viene de la API, true si fue creada por el usuario via CRUD
+ *                   se usa para que local_storage solo persista registros del usuario
+ *                   y no duplique los datos de la API al reiniciar
  */
 struct GalaxyFile {
     int   id;
