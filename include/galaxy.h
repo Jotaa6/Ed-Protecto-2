@@ -45,6 +45,7 @@ struct Galaxy {
  * @field  x        coordenada X
  * @field  y        coordenada Y
  * @field  z        coordenada Z
+**/
 struct GalaxyFile {
     int   id;
     char  name[100];
