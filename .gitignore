@@ -1,0 +1,22 @@
+# Binario compilado
+galaxias
+galaxias.exe
+
+# Artefactos de compilacion
+build/
+*.o
+
+# Archivos de salida generados
+output/resultantesKruskal.txt
+output/rutasMasCortas.txt
+output/rutaOptimizada.txt
+output/estadisticas.txt
+
+# IDEs
+.vscode/
+.idea/
+*.code-workspace
+
+# Sistema operativo
+.DS_Store
+Thumbs.db
