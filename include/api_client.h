@@ -16,4 +16,36 @@
 #include <iostream>
 using namespace std;
 
+const char* const BASE_URL = "https://galaxias-mock-api.onrender.com";
+
+/**
+ * @brief  Buffer interno usado por curl para acumular bytes de respuesta
+ * @field  data  arreglo de chars en heap con el contenido de la respuesta
+ * @field  size  cantidad actual de bytes almacenados en data
+ */
+struct ResponseBuffer {
+    char* data;
+    int   size;
+};
+
+/**
+ * @brief  Callback interno de curl que acumula bytes recibidos en el buffer
+ * @param  content  puntero a los datos recibidos
+ * @param  size     siempre 1
+ * @param  nmemb    cantidad de bytes recibidos
+ * @param  userp    puntero al ResponseBuffer donde se acumulan los datos
+ * @return cantidad de bytes procesados (size * nmemb)
+ */
+static size_t writeCallback(void* content, size_t size, size_t nmemb, void* userp);
+
+/**
+ * @brief  Realiza una peticion HTTP GET a BASE_URL + endpoint
+ *         y copia la respuesta en result
+ * @param  endpoint  ruta de la API e.g. "/galaxias"
+ * @param  result    arreglo de chars donde se almacenara la respuesta
+ * @param  maxLen    maximo de chars a copiar en result
+ * @return void — result contiene la respuesta o cadena vacia si falla
+ */
+void httpGet(const char* endpoint, char* result, int maxLen);
+
 #endif
