@@ -1,6 +1,6 @@
 /*
  * Archivo: graph.h
- * Descripcion: Estructura del grafo con lista de adyacencia y matriz de adyacencia
+ * Descripcion: Estructura del grafo con lista de adyacencia y matriz de adyacencia dinamica
  * Estructuras: Arco, Vertice
  * Funciones: insertarVertice, insertarArco, buscarVertice, eliminarVertice,
  *            eliminarArco, actualizarCostoArco, desmarcarVertices,
@@ -51,8 +51,8 @@ struct Vertice {
 // Cabeza de la lista enlazada global de vertices
 extern Vertice* grafo;
 
-// Matriz de adyacencia global cargada desde /grafo/adyacencia
-extern int adjMatrix[100][100];
+// Matriz de adyacencia dinamica cargada desde /grafo/adyacencia
+extern int** adjMatrix;
 
 // Numero de filas/columnas en la matriz de adyacencia
 extern int matrixSize;
@@ -85,6 +85,8 @@ void insertarArco(int origenId, int destinoId, int costo);
 
 /**
  * @brief  Elimina un vertice y todos sus arcos del grafo global
+ *         Elimina tambien los arcos entrantes desde otros vertices
+ *         para evitar arcos colgando apuntando a un vertice inexistente
  *         Actualiza tanto la lista de adyacencia como adjMatrix[][]
  * @param  galaxyId  id del vertice a eliminar
  * @return void
@@ -118,12 +120,13 @@ void actualizarCostoArco(int origenId, int destinoId, int nuevoCosto);
 void desmarcarVertices();
 
 /**
- * @brief  Carga la matriz de adyacencia desde un arreglo 2D parseado
- * @param  matrix  arreglo 2D fuente con los valores de adyacencia
+ * @brief  Carga la matriz de adyacencia desde un arreglo 2D dinamico
+ *         Libera memoria anterior si existe y asigna nueva memoria dinamica
+ * @param  matrix  arreglo 2D dinamico fuente con los valores de adyacencia
  * @param  size    numero de filas y columnas
  * @return void
  */
-void cargarMatrizAdyacencia(int matrix[][100], int size);
+void cargarMatrizAdyacencia(int** matrix, int size);
 
 /**
  * @brief  Imprime el grafo completo en terminal para verificacion
