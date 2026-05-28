@@ -39,7 +39,9 @@ struct Edge {
  * @field  originId       id de la galaxia origen
  * @field  destinationId  id de la galaxia destino
  * @field  cost           costo de viaje
- * @field  isLocal        false si viene de la API, true si fue creada por el usuario
+ * @field  isLocal        false si viene de la API, true si fue creada por el usuario via CRUD
+ *                        se usa para que local_storage solo persista registros del usuario
+ *                        y no duplique los datos de la API al reiniciar
  */
 struct EdgeFile {
     int  id;
