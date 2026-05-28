@@ -12,9 +12,9 @@
 #include "../include/graph.h"
 
 // Variables globales
-Vertice* grafo      = nullptr;
+Vertice* grafo          = nullptr;
 int adjMatrix[100][100] = {0};
-int matrixSize      = 0;
+int matrixSize          = 0;
 
 /**
  * @brief  Busca un vertice en el grafo global por su galaxyId
@@ -42,7 +42,7 @@ void insertarVertice(int galaxyId, string nombre) {
     if (buscarVertice(galaxyId) != nullptr)
         return;
 
-    Vertice* nuevo = new Vertice();
+    Vertice* nuevo       = new Vertice();
     nuevo->galaxyId      = galaxyId;
     nuevo->nombre        = nombre;
     nuevo->visitado      = false;
@@ -66,10 +66,10 @@ void insertarArco(int origenId, int destinoId, int costo) {
         return;
     }
 
-    Arco* nuevoArco    = new Arco();
-    nuevoArco->destinoId = destinoId;
-    nuevoArco->costo     = costo;
-    nuevoArco->sigA      = origen->subListaArcos;
+    Arco* nuevoArco       = new Arco();
+    nuevoArco->destinoId  = destinoId;
+    nuevoArco->costo      = costo;
+    nuevoArco->sigA       = origen->subListaArcos;
     origen->subListaArcos = nuevoArco;
 
     if (origenId < 100 && destinoId < 100)
@@ -78,17 +78,44 @@ void insertarArco(int origenId, int destinoId, int costo) {
 
 /**
  * @brief  Elimina un vertice y todos sus arcos del grafo global
+ *         Elimina tambien los arcos entrantes desde otros vertices
+ *         para evitar que queden arcos colgando apuntando a un vertice inexistente
  *         Actualiza tanto la lista de adyacencia como adjMatrix[][]
  * @param  galaxyId  id del vertice a eliminar
  * @return void
  */
 void eliminarVertice(int galaxyId) {
+    // Primero eliminar arcos entrantes desde todos los demas vertices
+    Vertice* temp = grafo;
+    while (temp != nullptr) {
+        if (temp->galaxyId != galaxyId) {
+            Arco* arco     = temp->subListaArcos;
+            Arco* anterior = nullptr;
+            while (arco != nullptr) {
+                if (arco->destinoId == galaxyId) {
+                    if (anterior == nullptr)
+                        temp->subListaArcos = arco->sigA;
+                    else
+                        anterior->sigA = arco->sigA;
+                    Arco* aEliminar = arco;
+                    arco = arco->sigA;
+                    delete aEliminar;
+                } else {
+                    anterior = arco;
+                    arco     = arco->sigA;
+                }
+            }
+        }
+        temp = temp->sigV;
+    }
+
+    // Luego eliminar el vertice y sus arcos salientes
     Vertice* actual   = grafo;
     Vertice* anterior = nullptr;
 
     while (actual != nullptr) {
         if (actual->galaxyId == galaxyId) {
-            // Liberar lista de arcos
+            // Liberar lista de arcos salientes
             Arco* arco = actual->subListaArcos;
             while (arco != nullptr) {
                 Arco* sigArco = arco->sigA;
