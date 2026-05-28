@@ -1,6 +1,6 @@
 /*
  * Archivo: graph.cpp
- * Descripcion: Implementacion del grafo con lista de adyacencia y matriz de adyacencia
+ * Descripcion: Implementacion del grafo con lista de adyacencia y matriz de adyacencia dinamica
  * Estructuras: Arco, Vertice
  * Funciones: insertarVertice, insertarArco, buscarVertice, eliminarVertice,
  *            eliminarArco, actualizarCostoArco, desmarcarVertices,
@@ -12,9 +12,9 @@
 #include "../include/graph.h"
 
 // Variables globales
-Vertice* grafo          = nullptr;
-int adjMatrix[100][100] = {0};
-int matrixSize          = 0;
+Vertice* grafo     = nullptr;
+int**    adjMatrix = nullptr;
+int      matrixSize = 0;
 
 /**
  * @brief  Busca un vertice en el grafo global por su galaxyId
@@ -72,14 +72,15 @@ void insertarArco(int origenId, int destinoId, int costo) {
     nuevoArco->sigA       = origen->subListaArcos;
     origen->subListaArcos = nuevoArco;
 
-    if (origenId < 100 && destinoId < 100)
+    if (adjMatrix != nullptr &&
+        origenId < matrixSize && destinoId < matrixSize)
         adjMatrix[origenId][destinoId] = costo;
 }
 
 /**
  * @brief  Elimina un vertice y todos sus arcos del grafo global
  *         Elimina tambien los arcos entrantes desde otros vertices
- *         para evitar que queden arcos colgando apuntando a un vertice inexistente
+ *         para evitar arcos colgando apuntando a un vertice inexistente
  *         Actualiza tanto la lista de adyacencia como adjMatrix[][]
  * @param  galaxyId  id del vertice a eliminar
  * @return void
@@ -124,9 +125,11 @@ void eliminarVertice(int galaxyId) {
             }
 
             // Limpiar fila y columna en adjMatrix
-            for (int i = 0; i < 100; i++) {
-                adjMatrix[galaxyId][i] = 0;
-                adjMatrix[i][galaxyId] = 0;
+            if (adjMatrix != nullptr && galaxyId < matrixSize) {
+                for (int i = 0; i < matrixSize; i++) {
+                    adjMatrix[galaxyId][i] = 0;
+                    adjMatrix[i][galaxyId] = 0;
+                }
             }
 
             if (anterior == nullptr)
@@ -168,7 +171,10 @@ void eliminarArco(int origenId, int destinoId) {
                 anterior->sigA = actual->sigA;
 
             delete actual;
-            adjMatrix[origenId][destinoId] = 0;
+
+            if (adjMatrix != nullptr &&
+                origenId < matrixSize && destinoId < matrixSize)
+                adjMatrix[origenId][destinoId] = 0;
             return;
         }
         anterior = actual;
@@ -195,8 +201,10 @@ void actualizarCostoArco(int origenId, int destinoId, int nuevoCosto) {
     Arco* arco = origen->subListaArcos;
     while (arco != nullptr) {
         if (arco->destinoId == destinoId) {
-            arco->costo                    = nuevoCosto;
-            adjMatrix[origenId][destinoId] = nuevoCosto;
+            arco->costo = nuevoCosto;
+            if (adjMatrix != nullptr &&
+                origenId < matrixSize && destinoId < matrixSize)
+                adjMatrix[origenId][destinoId] = nuevoCosto;
             return;
         }
         arco = arco->sigA;
@@ -218,16 +226,27 @@ void desmarcarVertices() {
 }
 
 /**
- * @brief  Carga la matriz de adyacencia desde un arreglo 2D parseado
- * @param  matrix  arreglo 2D fuente con los valores de adyacencia
+ * @brief  Carga la matriz de adyacencia desde un arreglo 2D dinamico
+ *         Libera memoria anterior si existe y asigna nueva memoria dinamica
+ * @param  matrix  arreglo 2D dinamico fuente con los valores de adyacencia
  * @param  size    numero de filas y columnas
  * @return void
  */
-void cargarMatrizAdyacencia(int matrix[][100], int size) {
+void cargarMatrizAdyacencia(int** matrix, int size) {
+    // Liberar memoria anterior si existe
+    if (adjMatrix != nullptr) {
+        for (int i = 0; i < matrixSize; i++)
+            delete[] adjMatrix[i];
+        delete[] adjMatrix;
+    }
+
     matrixSize = size;
-    for (int i = 0; i < size; i++)
+    adjMatrix  = new int*[size];
+    for (int i = 0; i < size; i++) {
+        adjMatrix[i] = new int[size];
         for (int j = 0; j < size; j++)
             adjMatrix[i][j] = matrix[i][j];
+    }
 }
 
 /**
@@ -238,10 +257,12 @@ void imprimirGrafo() {
     Vertice* temp = grafo;
     cout << "\n=== Grafo ===" << endl;
     while (temp != nullptr) {
-        cout << "Vertice: " << temp->nombre << " (ID: " << temp->galaxyId << ")" << endl;
+        cout << "Vertice: " << temp->nombre
+             << " (ID: " << temp->galaxyId << ")" << endl;
         Arco* arco = temp->subListaArcos;
         while (arco != nullptr) {
-            cout << "  -> " << arco->destinoId << " | Costo: " << arco->costo << endl;
+            cout << "  -> " << arco->destinoId
+                 << " | Costo: " << arco->costo << endl;
             arco = arco->sigA;
         }
         temp = temp->sigV;
