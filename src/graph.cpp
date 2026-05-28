@@ -12,8 +12,8 @@
 #include "../include/graph.h"
 
 // Variables globales
-Vertice* grafo     = nullptr;
-int**    adjMatrix = nullptr;
+Vertice* grafo      = nullptr;
+int**    adjMatrix  = nullptr;
 int      matrixSize = 0;
 
 /**
@@ -99,7 +99,7 @@ void eliminarVertice(int galaxyId) {
                     else
                         anterior->sigA = arco->sigA;
                     Arco* aEliminar = arco;
-                    arco = arco->sigA;
+                    arco            = arco->sigA;
                     delete aEliminar;
                 } else {
                     anterior = arco;
@@ -116,7 +116,6 @@ void eliminarVertice(int galaxyId) {
 
     while (actual != nullptr) {
         if (actual->galaxyId == galaxyId) {
-            // Liberar lista de arcos salientes
             Arco* arco = actual->subListaArcos;
             while (arco != nullptr) {
                 Arco* sigArco = arco->sigA;
@@ -124,7 +123,6 @@ void eliminarVertice(int galaxyId) {
                 arco = sigArco;
             }
 
-            // Limpiar fila y columna en adjMatrix
             if (adjMatrix != nullptr && galaxyId < matrixSize) {
                 for (int i = 0; i < matrixSize; i++) {
                     adjMatrix[galaxyId][i] = 0;
@@ -233,7 +231,6 @@ void desmarcarVertices() {
  * @return void
  */
 void cargarMatrizAdyacencia(int** matrix, int size) {
-    // Liberar memoria anterior si existe
     if (adjMatrix != nullptr) {
         for (int i = 0; i < matrixSize; i++)
             delete[] adjMatrix[i];
