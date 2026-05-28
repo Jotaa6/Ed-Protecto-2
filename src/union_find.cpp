@@ -1,6 +1,6 @@
 /*
  * Archivo: union_find.cpp
- * Descripcion: Implementacion del Union-Find para deteccion de ciclos en Kruskal
+ * Descripcion: Implementacion del Union-Find con memoria dinamica para Kruskal
  * Estructuras: ninguna propia
  * Funciones: initUnionFind, findRoot, unite, connected
  * Creado: 2026
@@ -9,17 +9,24 @@
  */
 #include "../include/union_find.h"
 
-// Definicion de las variables globales
-int parent[100];
-int rankArr[100];
+// Definicion de variables globales dinamicas
+int* parent  = nullptr;
+int* rankArr = nullptr;
 
 /**
- * @brief  Inicializa n conjuntos disjuntos
+ * @brief  Inicializa n conjuntos disjuntos con memoria dinamica
+ *         Libera memoria anterior si existe
  *         Cada nodo comienza siendo su propio padre con rango 0
  * @param  n  numero de nodos en el grafo
  * @return void
  */
 void initUnionFind(int n) {
+    if (parent  != nullptr) delete[] parent;
+    if (rankArr != nullptr) delete[] rankArr;
+
+    parent  = new int[n];
+    rankArr = new int[n];
+
     for (int i = 0; i < n; i++) {
         parent[i]  = i;
         rankArr[i] = 0;

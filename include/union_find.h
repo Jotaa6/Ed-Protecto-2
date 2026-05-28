@@ -10,14 +10,15 @@
 #ifndef UNION_FIND_H
 #define UNION_FIND_H
 
-// Arreglo de padres — parent[i] = padre del nodo i en el bosque disjunto
-extern int parent[100];
+// Arreglo dinamico de padres — parent[i] = padre del nodo i en el bosque disjunto
+extern int* parent;
 
-// Arreglo de rangos — rankArr[i] = rango del nodo i para union por rango
-extern int rankArr[100];
+// Arreglo dinamico de rangos — rankArr[i] = rango del nodo i para union por rango
+extern int* rankArr;
 
 /**
- * @brief  Inicializa n conjuntos disjuntos
+ * @brief  Inicializa n conjuntos disjuntos con memoria dinamica
+ *         Libera memoria anterior si existe
  *         Cada nodo comienza siendo su propio padre con rango 0
  * @param  n  numero de nodos en el grafo
  * @return void
