@@ -16,11 +16,12 @@
 #include <ctime>
 #include <cstring>
 #include <cstdlib>
+#include <direct.h>
 using namespace std;
 
 /**
  * @brief  Abre un archivo .txt en /output/ para escritura
- *         Crea la carpeta /output si no existe usando system()
+ *         Crea la carpeta /output si no existe usando _mkdir
  * @param  archivo   referencia a ofstream a abrir
  * @param  filename  nombre del archivo e.g. rutasMasCortas.txt
  * @return true si se abrio correctamente, false en caso de fallo
@@ -71,7 +72,7 @@ void cerrarArchivo(ofstream& archivo, const char* filename);
 
 /**
  * @brief  Obtiene la fecha y hora actual como string formateado
- *         Usado internamente por escribirEncabezado
+ *         Usa localtime_s para compatibilidad con Windows
  * @param  result   arreglo de chars donde se almacena el timestamp
  * @param  maxLen   maximo de caracteres a escribir en result
  * @return void
