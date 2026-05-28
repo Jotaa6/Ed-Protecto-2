@@ -12,7 +12,6 @@
 
 /**
  * @brief  Representa una ruta dirigida entre dos galaxias
- *         Reutilizado por Kruskal — no se necesita un struct separado para eso
  * @field  id             identificador unico de la API
  * @field  originId       id de la galaxia origen
  * @field  destinationId  id de la galaxia destino
