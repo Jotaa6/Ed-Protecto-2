@@ -1,7 +1,7 @@
 /*
  * Archivo: galaxy.h
- * Descripcion: Struct Galaxy para uso en memoria y GalaxyFile para serializacion binaria
- * Estructuras: Galaxy, GalaxyFile
+ * Descripcion: Struct Galaxy para representar una galaxia en memoria
+ * Estructuras: Galaxy
  * Funciones: ninguna propia
  * Creado: 2026
  * Ultima modificacion: 2026
@@ -15,15 +15,13 @@ using namespace std;
 
 /**
  * @brief  Representa una galaxia — usada como vertice en el grafo
+ *         Los datos vienen unicamente de la API, se parsean y se guardan en memoria
  * @field  id        identificador unico de la API
- * @field  name      nombre de la galaxia en memoria
+ * @field  name      nombre de la galaxia
  * @field  code      codigo unico para validacion de duplicados
  * @field  x         coordenada X
  * @field  y         coordenada Y
  * @field  z         coordenada Z
- * @field  isLocal   false si viene de la API, true si fue creada por el usuario via CRUD
- *                   se usa para que local_storage solo persista registros del usuario
- *                   y no duplique los datos de la API al reiniciar
  * @field  siguiente puntero al siguiente Galaxy en la lista enlazada global
  */
 struct Galaxy {
@@ -31,26 +29,7 @@ struct Galaxy {
     string  name;
     string  code;
     float   x, y, z;
-    bool    isLocal;
     Galaxy* siguiente;
-};
-
-/**
- * @brief  Version plana de Galaxy para serializacion binaria en archivo
- *         Usa char[] en lugar de string para escritura/lectura binaria segura
- *         Solo debe usarse en local_storage.cpp
- * @field  id       identificador unico
- * @field  name     nombre como arreglo de chars
- * @field  code     codigo como arreglo de chars
- * @field  x        coordenada X
- * @field  y        coordenada Y
- * @field  z        coordenada Z
-**/
-struct GalaxyFile {
-    int   id;
-    char  name[100];
-    char  code[50];
-    float x, y, z;
 };
 
 #endif
