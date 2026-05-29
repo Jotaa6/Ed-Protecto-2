@@ -36,6 +36,7 @@ void extractString(const char* json, const char* key,
     pos = strchr(pos, ':');
     if (pos == nullptr) return;
     pos++;
+
     while (*pos == ' ' || *pos == '\t') pos++;
 
     if (*pos == '"') {
@@ -80,11 +81,11 @@ float extractFloat(const char* json, const char* key) {
 }
 
 /**
- * @brief  Divide arreglo JSON en strings de objetos o sub-arreglos individuales
+ * @brief  Divide arreglo JSON en strings de objetos individuales
  * @param  jsonArray  arreglo JSON crudo
- * @param  results    arreglo de salida
- * @param  maxItems   max elementos a extraer
- * @param  count      salida — numero de elementos encontrados
+ * @param  results    arreglo de salida donde se almacenan los objetos
+ * @param  maxItems   max objetos a extraer
+ * @param  count      salida — numero de objetos encontrados
  * @return void
  */
 void splitJsonArray(const char* jsonArray, char results[][2048],
@@ -99,6 +100,7 @@ void splitJsonArray(const char* jsonArray, char results[][2048],
     while (*pos != '\0' && count < maxItems) {
         while (*pos == ' ' || *pos == '\t' ||
                *pos == '\n' || *pos == ',') pos++;
+
         if (*pos == ']' || *pos == '\0') break;
 
         if (*pos == '{') {
@@ -106,7 +108,10 @@ void splitJsonArray(const char* jsonArray, char results[][2048],
             const char* start = pos;
             while (*pos != '\0') {
                 if (*pos == '{') depth++;
-                else if (*pos == '}') { depth--; if (depth == 0) { pos++; break; } }
+                else if (*pos == '}') {
+                    depth--;
+                    if (depth == 0) { pos++; break; }
+                }
                 pos++;
             }
             int len = (int)(pos - start);
@@ -115,11 +120,15 @@ void splitJsonArray(const char* jsonArray, char results[][2048],
             results[count][len] = '\0';
             count++;
         } else if (*pos == '[') {
+            // Sub-arreglo (fila de la matriz)
             int depth = 0;
             const char* start = pos;
             while (*pos != '\0') {
                 if (*pos == '[') depth++;
-                else if (*pos == ']') { depth--; if (depth == 0) { pos++; break; } }
+                else if (*pos == ']') {
+                    depth--;
+                    if (depth == 0) { pos++; break; }
+                }
                 pos++;
             }
             int len = (int)(pos - start);
@@ -136,29 +145,35 @@ void splitJsonArray(const char* jsonArray, char results[][2048],
 /**
  * @brief  Extrae string de objeto anidado para una clave
  * @param  json    JSON crudo
- * @param  key     campo cuyo valor es un objeto
- * @param  result  salida
- * @param  maxLen  max chars
+ * @param  key     nombre del campo cuyo valor es un objeto
+ * @param  result  salida — objeto extraido como string
+ * @param  maxLen  max chars a copiar
  * @return void
  */
 void extractObject(const char* json, const char* key,
                    char* result, int maxLen) {
     result[0] = '\0';
     if (json == nullptr || key == nullptr) return;
+
     char searchKey[256];
     snprintf(searchKey, sizeof(searchKey), "\"%s\"", key);
     const char* pos = strstr(json, searchKey);
     if (pos == nullptr) return;
+
     pos = strchr(pos, ':');
     if (pos == nullptr) return;
     pos++;
     while (*pos == ' ' || *pos == '\t') pos++;
     if (*pos != '{') return;
+
     int depth = 0;
     const char* start = pos;
     while (*pos != '\0') {
         if (*pos == '{') depth++;
-        else if (*pos == '}') { depth--; if (depth == 0) { pos++; break; } }
+        else if (*pos == '}') {
+            depth--;
+            if (depth == 0) { pos++; break; }
+        }
         pos++;
     }
     int len = (int)(pos - start);
@@ -170,29 +185,35 @@ void extractObject(const char* json, const char* key,
 /**
  * @brief  Extrae string de arreglo anidado para una clave
  * @param  json    JSON crudo
- * @param  key     campo cuyo valor es un arreglo
- * @param  result  salida
- * @param  maxLen  max chars
+ * @param  key     nombre del campo cuyo valor es un arreglo
+ * @param  result  salida — arreglo extraido como string
+ * @param  maxLen  max chars a copiar
  * @return void
  */
 void extractNestedArray(const char* json, const char* key,
                         char* result, int maxLen) {
     result[0] = '\0';
     if (json == nullptr || key == nullptr) return;
+
     char searchKey[256];
     snprintf(searchKey, sizeof(searchKey), "\"%s\"", key);
     const char* pos = strstr(json, searchKey);
     if (pos == nullptr) return;
+
     pos = strchr(pos, ':');
     if (pos == nullptr) return;
     pos++;
     while (*pos == ' ' || *pos == '\t') pos++;
     if (*pos != '[') return;
+
     int depth = 0;
     const char* start = pos;
     while (*pos != '\0') {
         if (*pos == '[') depth++;
-        else if (*pos == ']') { depth--; if (depth == 0) { pos++; break; } }
+        else if (*pos == ']') {
+            depth--;
+            if (depth == 0) { pos++; break; }
+        }
         pos++;
     }
     int len = (int)(pos - start);
@@ -205,17 +226,19 @@ void extractNestedArray(const char* json, const char* key,
 
 /**
  * @brief  Parsea un objeto JSON en Galaxy
- *         Campos: id(string), codigo, nombre, x, y, z
  * @param  jsonObject  JSON crudo de una galaxia
  * @return nuevo Galaxy* en heap, o nullptr si falla
  */
 Galaxy* parseGalaxia(const char* jsonObject) {
     if (jsonObject == nullptr || jsonObject[0] == '\0') return nullptr;
+
     Galaxy* g    = new Galaxy();
+    g->id        = extractInt(jsonObject, "id");
     char buf[256];
-    extractString(jsonObject, "id",     buf, sizeof(buf)); g->id   = string(buf);
-    extractString(jsonObject, "nombre", buf, sizeof(buf)); g->name = string(buf);
-    extractString(jsonObject, "codigo", buf, sizeof(buf)); g->code = string(buf);
+    extractString(jsonObject, "nombre", buf, sizeof(buf));
+    g->name      = string(buf);
+    extractString(jsonObject, "codigo", buf, sizeof(buf));
+    g->code      = string(buf);
     g->x         = extractFloat(jsonObject, "x");
     g->y         = extractFloat(jsonObject, "y");
     g->z         = extractFloat(jsonObject, "z");
@@ -225,34 +248,34 @@ Galaxy* parseGalaxia(const char* jsonObject) {
 
 /**
  * @brief  Parsea un objeto JSON en Edge
- *         Campos: id(string), origen_id(string), destino_id(string), costo(float)
  * @param  jsonObject  JSON crudo de una ruta
  * @return nuevo Edge* en heap, o nullptr si falla
  */
 Edge* parseRuta(const char* jsonObject) {
     if (jsonObject == nullptr || jsonObject[0] == '\0') return nullptr;
-    Edge* e = new Edge();
-    char buf[256];
-    extractString(jsonObject, "id",        buf, sizeof(buf)); e->id            = string(buf);
-    extractString(jsonObject, "origen_id", buf, sizeof(buf)); e->originId      = string(buf);
-    extractString(jsonObject, "destino_id",buf, sizeof(buf)); e->destinationId = string(buf);
-    e->cost      = extractFloat(jsonObject, "costo");
-    e->siguiente = nullptr;
+
+    Edge* e          = new Edge();
+    e->id            = extractInt(jsonObject, "id");
+    e->originId      = extractInt(jsonObject, "origen");
+    e->destinationId = extractInt(jsonObject, "destino");
+    e->cost          = extractInt(jsonObject, "costo");
+    e->siguiente     = nullptr;
     return e;
 }
 
 /**
  * @brief  Parsea un objeto JSON en Ship
- *         Campos: id(string), nombre
  * @param  jsonObject  JSON crudo de una nave
  * @return nuevo Ship* en heap, o nullptr si falla
  */
 Ship* parseNave(const char* jsonObject) {
     if (jsonObject == nullptr || jsonObject[0] == '\0') return nullptr;
-    Ship* s = new Ship();
+
+    Ship* s        = new Ship();
+    s->id          = extractInt(jsonObject, "id");
     char buf[256];
-    extractString(jsonObject, "id",     buf, sizeof(buf)); s->id   = string(buf);
-    extractString(jsonObject, "nombre", buf, sizeof(buf)); s->name = string(buf);
+    extractString(jsonObject, "nombre", buf, sizeof(buf));
+    s->name        = string(buf);
     s->tripHistory = nullptr;
     s->siguiente   = nullptr;
     return s;
@@ -260,20 +283,21 @@ Ship* parseNave(const char* jsonObject) {
 
 /**
  * @brief  Parsea un objeto JSON en Trip
- *         Campos: id(string), nave_id(string), ruta_id(string),
- *                 fecha(string), costo_real(float)
  * @param  jsonObject  JSON crudo de un viaje
  * @return nuevo Trip* en heap, o nullptr si falla
  */
 Trip* parseViaje(const char* jsonObject) {
     if (jsonObject == nullptr || jsonObject[0] == '\0') return nullptr;
-    Trip* t = new Trip();
+
+    Trip* t          = new Trip();
+    t->id            = extractInt(jsonObject, "id");
+    t->shipId        = extractInt(jsonObject, "naveId");
+    t->originId      = extractInt(jsonObject, "origen");
+    t->destinationId = extractInt(jsonObject, "destino");
+    t->cost          = extractInt(jsonObject, "costo");
     char buf[256];
-    extractString(jsonObject, "id",       buf, sizeof(buf)); t->id     = string(buf);
-    extractString(jsonObject, "nave_id",  buf, sizeof(buf)); t->shipId = string(buf);
-    extractString(jsonObject, "ruta_id",  buf, sizeof(buf)); t->rutaId = string(buf);
-    extractString(jsonObject, "fecha",    buf, sizeof(buf)); t->date   = string(buf);
-    t->cost      = extractFloat(jsonObject, "costo_real");
+    extractString(jsonObject, "fecha", buf, sizeof(buf));
+    t->date      = string(buf);
     t->siguiente = nullptr;
     return t;
 }
@@ -282,16 +306,18 @@ Trip* parseViaje(const char* jsonObject) {
 
 /**
  * @brief  Parsea GET /galaxias en lista enlazada de Galaxy
- * @param  json  respuesta del endpoint — arreglo JSON directo
+ * @param  json  respuesta del endpoint
  * @param  head  salida — cabeza de la lista resultante
  * @return void
  */
 void parseGalaxias(const char* json, Galaxy*& head) {
     head = nullptr;
     if (json == nullptr || json[0] == '\0') return;
+
     char objects[500][2048];
     int count = 0;
     splitJsonArray(json, objects, 500, count);
+
     Galaxy* tail = nullptr;
     for (int i = 0; i < count; i++) {
         Galaxy* g = parseGalaxia(objects[i]);
@@ -312,16 +338,18 @@ Galaxy* parseGalaxiaById(const char* json) {
 
 /**
  * @brief  Parsea GET /rutas en lista enlazada de Edge
- * @param  json  respuesta del endpoint — arreglo JSON directo
+ * @param  json  respuesta del endpoint
  * @param  head  salida — cabeza de la lista resultante
  * @return void
  */
 void parseRutas(const char* json, Edge*& head) {
     head = nullptr;
     if (json == nullptr || json[0] == '\0') return;
+
     char objects[500][2048];
     int count = 0;
     splitJsonArray(json, objects, 500, count);
+
     Edge* tail = nullptr;
     for (int i = 0; i < count; i++) {
         Edge* e = parseRuta(objects[i]);
@@ -342,16 +370,18 @@ Edge* parseRutaById(const char* json) {
 
 /**
  * @brief  Parsea GET /naves en lista enlazada de Ship
- * @param  json  respuesta del endpoint — arreglo JSON directo
+ * @param  json  respuesta del endpoint
  * @param  head  salida — cabeza de la lista resultante
  * @return void
  */
 void parseNaves(const char* json, Ship*& head) {
     head = nullptr;
     if (json == nullptr || json[0] == '\0') return;
+
     char objects[500][2048];
     int count = 0;
     splitJsonArray(json, objects, 500, count);
+
     Ship* tail = nullptr;
     for (int i = 0; i < count; i++) {
         Ship* s = parseNave(objects[i]);
@@ -372,16 +402,18 @@ Ship* parseNaveById(const char* json) {
 
 /**
  * @brief  Parsea GET /historial en lista enlazada de Trip
- * @param  json  respuesta del endpoint — arreglo JSON directo
+ * @param  json  respuesta del endpoint
  * @param  head  salida — cabeza de la lista resultante
  * @return void
  */
 void parseHistorial(const char* json, Trip*& head) {
     head = nullptr;
     if (json == nullptr || json[0] == '\0') return;
+
     char objects[500][2048];
     int count = 0;
     splitJsonArray(json, objects, 500, count);
+
     Trip* tail = nullptr;
     for (int i = 0; i < count; i++) {
         Trip* t = parseViaje(objects[i]);
@@ -413,6 +445,7 @@ void parseHistorialNave(const char* json, Trip*& head) {
 /**
  * @brief  Parsea GET /grafo en listas de Galaxy y Edge
  *         El endpoint devuelve objeto con "nodos" y "aristas"
+ *         Los nodos usan "indice" como entero e "id" como string
  * @param  json   respuesta del endpoint
  * @param  gHead  salida — cabeza de la lista de Galaxy
  * @param  eHead  salida — cabeza de la lista de Edge
@@ -422,10 +455,12 @@ void parseGrafo(const char* json, Galaxy*& gHead, Edge*& eHead) {
     gHead = nullptr;
     eHead = nullptr;
     if (json == nullptr || json[0] == '\0') return;
+
     char nodesArray[65536];
     char edgesArray[65536];
     extractNestedArray(json, "nodos",    nodesArray, sizeof(nodesArray));
     extractNestedArray(json, "aristas",  edgesArray, sizeof(edgesArray));
+
     parseGalaxias(nodesArray, gHead);
     parseRutas(edgesArray,    eHead);
 }
@@ -442,16 +477,17 @@ void parseKruskal(const char* json, Edge*& head) {
 }
 
 /**
- * @brief  Parsea GET /grafo/adyacencia en matriz dinamica float**
+ * @brief  Parsea GET /grafo/adyacencia en matriz dinamica int**
  *         El endpoint devuelve objeto con "orden", "nodos" y "matriz"
- *         Los valores pueden ser null (se tratan como 0.0) o float
+ *         Los valores de la matriz pueden ser null (se tratan como 0)
+ *         o float (se convierten a int redondeando)
  *         Asigna memoria dinamica — quien llama es responsable de liberarla
  * @param  json    respuesta del endpoint
- * @param  matrix  salida — matriz dinamica float** con los valores
+ * @param  matrix  salida — matriz dinamica int** con los valores
  * @param  size    salida — numero de filas y columnas
  * @return void
  */
-void parseAdyacencia(const char* json, float**& matrix, int& size) {
+void parseAdyacencia(const char* json, int**& matrix, int& size) {
     matrix = nullptr;
     size   = 0;
     if (json == nullptr || json[0] == '\0') return;
@@ -468,35 +504,47 @@ void parseAdyacencia(const char* json, float**& matrix, int& size) {
     if (rowCount == 0) return;
 
     size   = rowCount;
-    matrix = new float*[size];
+    matrix = new int*[size];
 
     for (int i = 0; i < size; i++) {
-        matrix[i] = new float[size];
+        matrix[i] = new int[size];
 
+        // Dividir cada fila en celdas individuales
+        // Las celdas pueden ser: numero float, null
         const char* pos = rows[i];
+
+        // Saltar el '['
         while (*pos != '[' && *pos != '\0') pos++;
         if (*pos == '[') pos++;
 
         int j = 0;
         while (*pos != ']' && *pos != '\0' && j < size) {
+            // Saltar espacios y comas
             while (*pos == ' ' || *pos == '\t' ||
                    *pos == '\n' || *pos == ',') pos++;
+
             if (*pos == ']' || *pos == '\0') break;
 
+            // Leer valor: puede ser null o numero
             if (strncmp(pos, "null", 4) == 0) {
-                matrix[i][j] = 0.0f;
+                matrix[i][j] = 0;
                 pos += 4;
             } else {
+                // Leer numero (puede ser float)
                 char numBuf[64];
                 int k = 0;
                 while (*pos != ',' && *pos != ']' &&
                        *pos != '\0' && k < 63)
                     numBuf[k++] = *pos++;
-                numBuf[k]    = '\0';
-                matrix[i][j] = (float)atof(numBuf);
+                numBuf[k] = '\0';
+                // Convertir float a int
+                matrix[i][j] = (int)atof(numBuf);
             }
             j++;
         }
-        while (j < size) matrix[i][j++] = 0.0f;
+
+        // Rellenar el resto con 0 si faltan celdas
+        while (j < size)
+            matrix[i][j++] = 0;
     }
 }
