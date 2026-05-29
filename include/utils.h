@@ -28,7 +28,6 @@ extern Trip*   globalTrips;
 
 /**
  * @brief  Lee entero de cin, repite hasta que se ingrese un entero valido
- *         Limpia estado de error de cin en entrada invalida
  * @param  mensaje  prompt a mostrar al usuario
  * @return entero valido ingresado por el usuario
  */
@@ -60,31 +59,31 @@ bool confirmarAccion(const char* mensaje);
 void getCurrentTimestamp(char* result, int maxLen);
 
 /**
- * @brief  Busca en la lista global de Galaxy por id
- * @param  id  id a buscar
+ * @brief  Busca en la lista global de Galaxy por id string
+ * @param  id  id string a buscar e.g. "galaxia-1"
  * @return puntero a Galaxy si se encuentra, nullptr si no
  */
-Galaxy* findGalaxyById(int id);
+Galaxy* findGalaxyById(string id);
 
 /**
- * @brief  Busca en la lista global de Ship por id
- * @param  id  id a buscar
+ * @brief  Busca en la lista global de Ship por id string
+ * @param  id  id string a buscar e.g. "nave-1"
  * @return puntero a Ship si se encuentra, nullptr si no
  */
-Ship* findShipById(int id);
+Ship* findShipById(string id);
 
 /**
- * @brief  Busca en la lista global de Edge por id
- * @param  id  id a buscar
+ * @brief  Busca en la lista global de Edge por id string
+ * @param  id  id string a buscar e.g. "ruta-1"
  * @return puntero a Edge si se encuentra, nullptr si no
  */
-Edge* findEdgeById(int id);
+Edge* findEdgeById(string id);
 
 /**
- * @brief  Busca en la lista global de Trip por id
- * @param  id  id a buscar
+ * @brief  Busca en la lista global de Trip por id string
+ * @param  id  id string a buscar e.g. "viaje-1"
  * @return puntero a Trip si se encuentra, nullptr si no
  */
-Trip* findTripById(int id);
+Trip* findTripById(string id);
 
 #endif

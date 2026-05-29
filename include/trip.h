@@ -16,22 +16,20 @@ using namespace std;
 /**
  * @brief  Representa un viaje registrado por una nave entre dos galaxias
  *         Los datos vienen unicamente de la API, se parsean y se guardan en memoria
- * @field  id             identificador unico de la API
- * @field  shipId         id de la nave que realizo el viaje
- * @field  originId       id de la galaxia origen
- * @field  destinationId  id de la galaxia destino
- * @field  cost           costo del viaje
- * @field  date           fecha en que ocurrio el viaje
- * @field  siguiente      puntero al siguiente Trip en la lista enlazada global
+ * @field  id        identificador unico de la API e.g. "viaje-1"
+ * @field  shipId    id string de la nave e.g. "nave-5"
+ * @field  rutaId    id string de la ruta e.g. "ruta-8"
+ * @field  date      fecha del viaje e.g. "2025-02-26"
+ * @field  cost      costo real del viaje como float
+ * @field  siguiente puntero al siguiente Trip en la lista enlazada global
  */
 struct Trip {
-    int    id;
-    int    shipId;
-    int    originId;
-    int    destinationId;
-    int    cost;
-    string date;
-    Trip*  siguiente;
+    string  id;
+    string  shipId;
+    string  rutaId;
+    string  date;
+    float   cost;
+    Trip*   siguiente;
 };
 
 #endif

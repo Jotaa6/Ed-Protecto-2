@@ -10,7 +10,6 @@
  */
 #include "../include/utils.h"
 
-// Definicion de listas globales
 Galaxy* globalGalaxias = nullptr;
 Ship*   globalShips    = nullptr;
 Edge*   globalEdges    = nullptr;
@@ -18,7 +17,6 @@ Trip*   globalTrips    = nullptr;
 
 /**
  * @brief  Lee entero de cin, repite hasta que se ingrese un entero valido
- *         Limpia estado de error de cin en entrada invalida
  * @param  mensaje  prompt a mostrar al usuario
  * @return entero valido ingresado por el usuario
  */
@@ -27,10 +25,7 @@ int pedirEntero(const char* mensaje) {
     while (true) {
         cout << mensaje;
         cin >> valor;
-        if (cin.good()) {
-            cin.ignore();
-            return valor;
-        }
+        if (cin.good()) { cin.ignore(); return valor; }
         cin.clear();
         cin.ignore(1000, '\n');
         cout << "Entrada invalida. Ingrese un numero entero." << endl;
@@ -48,8 +43,7 @@ void pedirCadena(const char* mensaje, char* result, int maxLen) {
     while (true) {
         cout << mensaje;
         cin.getline(result, maxLen);
-        if (strlen(result) > 0)
-            return;
+        if (strlen(result) > 0) return;
         cout << "El campo no puede estar vacio." << endl;
     }
 }
@@ -68,7 +62,6 @@ bool confirmarAccion(const char* mensaje) {
 
 /**
  * @brief  Retorna fecha y hora actual como string formateado
- *         Usa localtime_s para compatibilidad con Windows
  * @param  result   arreglo de chars para almacenar el timestamp
  * @param  maxLen   maximo de caracteres a escribir
  * @return void
@@ -81,11 +74,11 @@ void getCurrentTimestamp(char* result, int maxLen) {
 }
 
 /**
- * @brief  Busca en la lista global de Galaxy por id
- * @param  id  id a buscar
+ * @brief  Busca en la lista global de Galaxy por id string
+ * @param  id  id string a buscar
  * @return puntero a Galaxy si se encuentra, nullptr si no
  */
-Galaxy* findGalaxyById(int id) {
+Galaxy* findGalaxyById(string id) {
     Galaxy* temp = globalGalaxias;
     while (temp != nullptr) {
         if (temp->id == id) return temp;
@@ -95,11 +88,11 @@ Galaxy* findGalaxyById(int id) {
 }
 
 /**
- * @brief  Busca en la lista global de Ship por id
- * @param  id  id a buscar
+ * @brief  Busca en la lista global de Ship por id string
+ * @param  id  id string a buscar
  * @return puntero a Ship si se encuentra, nullptr si no
  */
-Ship* findShipById(int id) {
+Ship* findShipById(string id) {
     Ship* temp = globalShips;
     while (temp != nullptr) {
         if (temp->id == id) return temp;
@@ -109,11 +102,11 @@ Ship* findShipById(int id) {
 }
 
 /**
- * @brief  Busca en la lista global de Edge por id
- * @param  id  id a buscar
+ * @brief  Busca en la lista global de Edge por id string
+ * @param  id  id string a buscar
  * @return puntero a Edge si se encuentra, nullptr si no
  */
-Edge* findEdgeById(int id) {
+Edge* findEdgeById(string id) {
     Edge* temp = globalEdges;
     while (temp != nullptr) {
         if (temp->id == id) return temp;
@@ -123,11 +116,11 @@ Edge* findEdgeById(int id) {
 }
 
 /**
- * @brief  Busca en la lista global de Trip por id
- * @param  id  id a buscar
+ * @brief  Busca en la lista global de Trip por id string
+ * @param  id  id string a buscar
  * @return puntero a Trip si se encuentra, nullptr si no
  */
-Trip* findTripById(int id) {
+Trip* findTripById(string id) {
     Trip* temp = globalTrips;
     while (temp != nullptr) {
         if (temp->id == id) return temp;

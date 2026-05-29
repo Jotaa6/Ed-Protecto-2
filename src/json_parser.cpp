@@ -1,13 +1,12 @@
 /*
  * Archivo: json_parser.cpp
  * Descripcion: Implementacion del parseo de JSON en tres capas
+ *              Campos reales de la API:
+ *              Galaxy: id(string), codigo, nombre, x, y, z
+ *              Edge:   id(string), origen_id, destino_id, costo(float)
+ *              Ship:   id(string), nombre
+ *              Trip:   id(string), nave_id, ruta_id, fecha, costo_real(float)
  * Estructuras: ninguna propia
- * Funciones: extractString, extractInt, extractFloat, splitJsonArray,
- *            extractObject, extractNestedArray, parseGalaxia, parseRuta,
- *            parseNave, parseViaje, parseGalaxias, parseGalaxiaById,
- *            parseRutas, parseRutaById, parseNaves, parseNaveById,
- *            parseHistorial, parseViajeById, parseHistorialNave,
- *            parseGrafo, parseKruskal, parseAdyacencia
  * Creado: 2026
  * Ultima modificacion: 2026
  * Autores: <integrantes>
