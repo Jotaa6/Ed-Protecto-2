@@ -120,6 +120,23 @@ void splitJsonArray(const char* jsonArray, char results[][2048],
             strncpy(results[count], start, len);
             results[count][len] = '\0';
             count++;
+        } else if (*pos == '[') {
+            // Sub-arreglo (fila de la matriz)
+            int depth = 0;
+            const char* start = pos;
+            while (*pos != '\0') {
+                if (*pos == '[') depth++;
+                else if (*pos == ']') {
+                    depth--;
+                    if (depth == 0) { pos++; break; }
+                }
+                pos++;
+            }
+            int len = (int)(pos - start);
+            if (len > 2047) len = 2047;
+            strncpy(results[count], start, len);
+            results[count][len] = '\0';
+            count++;
         } else {
             pos++;
         }
@@ -428,6 +445,8 @@ void parseHistorialNave(const char* json, Trip*& head) {
 
 /**
  * @brief  Parsea GET /grafo en listas de Galaxy y Edge
+ *         El endpoint devuelve objeto con "nodos" y "aristas"
+ *         Los nodos usan "indice" como entero e "id" como string
  * @param  json   respuesta del endpoint
  * @param  gHead  salida — cabeza de la lista de Galaxy
  * @param  eHead  salida — cabeza de la lista de Edge
@@ -440,7 +459,7 @@ void parseGrafo(const char* json, Galaxy*& gHead, Edge*& eHead) {
 
     char nodesArray[65536];
     char edgesArray[65536];
-    extractNestedArray(json, "vertices", nodesArray, sizeof(nodesArray));
+    extractNestedArray(json, "nodos",    nodesArray, sizeof(nodesArray));
     extractNestedArray(json, "aristas",  edgesArray, sizeof(edgesArray));
 
     parseGalaxias(nodesArray, gHead);
@@ -460,6 +479,9 @@ void parseKruskal(const char* json, Edge*& head) {
 
 /**
  * @brief  Parsea GET /grafo/adyacencia en matriz dinamica int**
+ *         El endpoint devuelve objeto con "orden", "nodos" y "matriz"
+ *         Los valores de la matriz pueden ser null (se tratan como 0)
+ *         o float (se convierten a int redondeando)
  *         Asigna memoria dinamica — quien llama es responsable de liberarla
  * @param  json    respuesta del endpoint
  * @param  matrix  salida — matriz dinamica int** con los valores
@@ -471,9 +493,15 @@ void parseAdyacencia(const char* json, int**& matrix, int& size) {
     size   = 0;
     if (json == nullptr || json[0] == '\0') return;
 
+    // Extraer el arreglo "matriz" del objeto contenedor
+    char matrizArray[65536];
+    extractNestedArray(json, "matriz", matrizArray, sizeof(matrizArray));
+    if (matrizArray[0] == '\0') return;
+
+    // Dividir en filas
     char rows[100][2048];
     int rowCount = 0;
-    splitJsonArray(json, rows, 100, rowCount);
+    splitJsonArray(matrizArray, rows, 100, rowCount);
     if (rowCount == 0) return;
 
     size   = rowCount;
@@ -481,14 +509,43 @@ void parseAdyacencia(const char* json, int**& matrix, int& size) {
 
     for (int i = 0; i < size; i++) {
         matrix[i] = new int[size];
-        char cells[100][2048];
-        int cellCount = 0;
-        splitJsonArray(rows[i], cells, 100, cellCount);
-        for (int j = 0; j < size; j++) {
-            if (j < cellCount)
-                matrix[i][j] = atoi(cells[j]);
-            else
+
+        // Dividir cada fila en celdas individuales
+        // Las celdas pueden ser: numero float, null
+        const char* pos = rows[i];
+
+        // Saltar el '['
+        while (*pos != '[' && *pos != '\0') pos++;
+        if (*pos == '[') pos++;
+
+        int j = 0;
+        while (*pos != ']' && *pos != '\0' && j < size) {
+            // Saltar espacios y comas
+            while (*pos == ' ' || *pos == '\t' ||
+                   *pos == '\n' || *pos == ',') pos++;
+
+            if (*pos == ']' || *pos == '\0') break;
+
+            // Leer valor: puede ser null o numero
+            if (strncmp(pos, "null", 4) == 0) {
                 matrix[i][j] = 0;
+                pos += 4;
+            } else {
+                // Leer numero (puede ser float)
+                char numBuf[64];
+                int k = 0;
+                while (*pos != ',' && *pos != ']' &&
+                       *pos != '\0' && k < 63)
+                    numBuf[k++] = *pos++;
+                numBuf[k] = '\0';
+                // Convertir float a int
+                matrix[i][j] = (int)atof(numBuf);
+            }
+            j++;
         }
+
+        // Rellenar el resto con 0 si faltan celdas
+        while (j < size)
+            matrix[i][j++] = 0;
     }
 }
