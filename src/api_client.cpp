@@ -64,7 +64,7 @@ void httpGet(const char* endpoint, char* result, int maxLen) {
         curl_easy_setopt(curl, CURLOPT_URL, url);
         curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, writeCallback);
         curl_easy_setopt(curl, CURLOPT_WRITEDATA, &buf);
-        curl_easy_setopt(curl, CURLOPT_TIMEOUT, 60L);
+        curl_easy_setopt(curl, CURLOPT_TIMEOUT, 300L);
         curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
 
         CURLcode res = curl_easy_perform(curl);
