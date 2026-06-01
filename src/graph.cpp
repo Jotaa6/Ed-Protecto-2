@@ -1,6 +1,6 @@
 /*
  * Archivo: graph.cpp
- * Descripcion: Implementacion del grafo con lista de adyacencia y matriz de adyacencia dinamica
+ * Descripcion: Implementacion del grafo con lista de adyacencia y matriz dinamica
  * Estructuras: Arco, Vertice
  * Funciones: insertarVertice, insertarArco, buscarVertice, eliminarVertice,
  *            eliminarArco, actualizarCostoArco, desmarcarVertices,
@@ -11,21 +11,19 @@
  */
 #include "../include/graph.h"
 
-// Variables globales
 Vertice* grafo      = nullptr;
-int**    adjMatrix  = nullptr;
+float**  adjMatrix  = nullptr;
 int      matrixSize = 0;
 
 /**
- * @brief  Busca un vertice en el grafo global por su galaxyId
- * @param  galaxyId  id de la galaxia a buscar
+ * @brief  Busca un vertice en el grafo global por su galaxyId string
+ * @param  galaxyId  id string a buscar
  * @return puntero al Vertice si se encuentra, nullptr si no existe
  */
-Vertice* buscarVertice(int galaxyId) {
+Vertice* buscarVertice(string galaxyId) {
     Vertice* temp = grafo;
     while (temp != nullptr) {
-        if (temp->galaxyId == galaxyId)
-            return temp;
+        if (temp->galaxyId == galaxyId) return temp;
         temp = temp->sigV;
     }
     return nullptr;
@@ -33,14 +31,12 @@ Vertice* buscarVertice(int galaxyId) {
 
 /**
  * @brief  Inserta un nuevo vertice en el grafo global
- *         No hace nada si ya existe un vertice con el mismo galaxyId
- * @param  galaxyId  id de la galaxia a insertar
+ * @param  galaxyId  id string de la galaxia
  * @param  nombre    nombre de la galaxia
  * @return void
  */
-void insertarVertice(int galaxyId, string nombre) {
-    if (buscarVertice(galaxyId) != nullptr)
-        return;
+void insertarVertice(string galaxyId, string nombre) {
+    if (buscarVertice(galaxyId) != nullptr) return;
 
     Vertice* nuevo       = new Vertice();
     nuevo->galaxyId      = galaxyId;
@@ -53,13 +49,12 @@ void insertarVertice(int galaxyId, string nombre) {
 
 /**
  * @brief  Inserta un arco dirigido de origen a destino
- *         Actualiza tanto la lista de adyacencia como adjMatrix[][]
- * @param  origenId   id de la galaxia origen
- * @param  destinoId  id de la galaxia destino
- * @param  costo      costo del arco
+ * @param  origenId   id string origen
+ * @param  destinoId  id string destino
+ * @param  costo      costo float del arco
  * @return void
  */
-void insertarArco(int origenId, int destinoId, int costo) {
+void insertarArco(string origenId, string destinoId, float costo) {
     Vertice* origen = buscarVertice(origenId);
     if (origen == nullptr) {
         cout << "Error: vertice origen " << origenId << " no encontrado." << endl;
@@ -71,22 +66,15 @@ void insertarArco(int origenId, int destinoId, int costo) {
     nuevoArco->costo      = costo;
     nuevoArco->sigA       = origen->subListaArcos;
     origen->subListaArcos = nuevoArco;
-
-    if (adjMatrix != nullptr &&
-        origenId < matrixSize && destinoId < matrixSize)
-        adjMatrix[origenId][destinoId] = costo;
 }
 
 /**
- * @brief  Elimina un vertice y todos sus arcos del grafo global
- *         Elimina tambien los arcos entrantes desde otros vertices
- *         para evitar arcos colgando apuntando a un vertice inexistente
- *         Actualiza tanto la lista de adyacencia como adjMatrix[][]
- * @param  galaxyId  id del vertice a eliminar
+ * @brief  Elimina un vertice y todos sus arcos incluyendo arcos entrantes
+ * @param  galaxyId  id string del vertice a eliminar
  * @return void
  */
-void eliminarVertice(int galaxyId) {
-    // Primero eliminar arcos entrantes desde todos los demas vertices
+void eliminarVertice(string galaxyId) {
+    // Eliminar arcos entrantes desde otros vertices
     Vertice* temp = grafo;
     while (temp != nullptr) {
         if (temp->galaxyId != galaxyId) {
@@ -99,7 +87,7 @@ void eliminarVertice(int galaxyId) {
                     else
                         anterior->sigA = arco->sigA;
                     Arco* aEliminar = arco;
-                    arco            = arco->sigA;
+                    arco = arco->sigA;
                     delete aEliminar;
                 } else {
                     anterior = arco;
@@ -110,31 +98,19 @@ void eliminarVertice(int galaxyId) {
         temp = temp->sigV;
     }
 
-    // Luego eliminar el vertice y sus arcos salientes
+    // Eliminar el vertice y sus arcos salientes
     Vertice* actual   = grafo;
     Vertice* anterior = nullptr;
-
     while (actual != nullptr) {
         if (actual->galaxyId == galaxyId) {
             Arco* arco = actual->subListaArcos;
             while (arco != nullptr) {
-                Arco* sigArco = arco->sigA;
+                Arco* sig = arco->sigA;
                 delete arco;
-                arco = sigArco;
+                arco = sig;
             }
-
-            if (adjMatrix != nullptr && galaxyId < matrixSize) {
-                for (int i = 0; i < matrixSize; i++) {
-                    adjMatrix[galaxyId][i] = 0;
-                    adjMatrix[i][galaxyId] = 0;
-                }
-            }
-
-            if (anterior == nullptr)
-                grafo = actual->sigV;
-            else
-                anterior->sigV = actual->sigV;
-
+            if (anterior == nullptr) grafo = actual->sigV;
+            else anterior->sigV = actual->sigV;
             delete actual;
             return;
         }
@@ -146,12 +122,11 @@ void eliminarVertice(int galaxyId) {
 
 /**
  * @brief  Elimina el arco de origen a destino
- *         Actualiza tanto la lista de adyacencia como adjMatrix[][]
- * @param  origenId   id de la galaxia origen
- * @param  destinoId  id de la galaxia destino
+ * @param  origenId   id string origen
+ * @param  destinoId  id string destino
  * @return void
  */
-void eliminarArco(int origenId, int destinoId) {
+void eliminarArco(string origenId, string destinoId) {
     Vertice* origen = buscarVertice(origenId);
     if (origen == nullptr) {
         cout << "Vertice origen " << origenId << " no encontrado." << endl;
@@ -160,19 +135,11 @@ void eliminarArco(int origenId, int destinoId) {
 
     Arco* actual   = origen->subListaArcos;
     Arco* anterior = nullptr;
-
     while (actual != nullptr) {
         if (actual->destinoId == destinoId) {
-            if (anterior == nullptr)
-                origen->subListaArcos = actual->sigA;
-            else
-                anterior->sigA = actual->sigA;
-
+            if (anterior == nullptr) origen->subListaArcos = actual->sigA;
+            else anterior->sigA = actual->sigA;
             delete actual;
-
-            if (adjMatrix != nullptr &&
-                origenId < matrixSize && destinoId < matrixSize)
-                adjMatrix[origenId][destinoId] = 0;
             return;
         }
         anterior = actual;
@@ -183,13 +150,12 @@ void eliminarArco(int origenId, int destinoId) {
 
 /**
  * @brief  Actualiza el costo del arco de origen a destino
- *         Actualiza tanto la lista de adyacencia como adjMatrix[][]
- * @param  origenId    id de la galaxia origen
- * @param  destinoId   id de la galaxia destino
- * @param  nuevoCosto  nuevo costo a asignar
+ * @param  origenId    id string origen
+ * @param  destinoId   id string destino
+ * @param  nuevoCosto  nuevo costo float
  * @return void
  */
-void actualizarCostoArco(int origenId, int destinoId, int nuevoCosto) {
+void actualizarCostoArco(string origenId, string destinoId, float nuevoCosto) {
     Vertice* origen = buscarVertice(origenId);
     if (origen == nullptr) {
         cout << "Vertice origen " << origenId << " no encontrado." << endl;
@@ -200,9 +166,6 @@ void actualizarCostoArco(int origenId, int destinoId, int nuevoCosto) {
     while (arco != nullptr) {
         if (arco->destinoId == destinoId) {
             arco->costo = nuevoCosto;
-            if (adjMatrix != nullptr &&
-                origenId < matrixSize && destinoId < matrixSize)
-                adjMatrix[origenId][destinoId] = nuevoCosto;
             return;
         }
         arco = arco->sigA;
@@ -211,8 +174,7 @@ void actualizarCostoArco(int origenId, int destinoId, int nuevoCosto) {
 }
 
 /**
- * @brief  Resetea visitado = false en todos los vertices del grafo
- *         Debe llamarse antes de cada recorrido BFS, DFS o Dijkstra
+ * @brief  Resetea visitado = false en todos los vertices
  * @return void
  */
 void desmarcarVertices() {
@@ -224,23 +186,20 @@ void desmarcarVertices() {
 }
 
 /**
- * @brief  Carga la matriz de adyacencia desde un arreglo 2D dinamico
- *         Libera memoria anterior si existe y asigna nueva memoria dinamica
- * @param  matrix  arreglo 2D dinamico fuente con los valores de adyacencia
+ * @brief  Carga la matriz de adyacencia desde arreglo 2D dinamico float**
+ * @param  matrix  arreglo 2D float** fuente
  * @param  size    numero de filas y columnas
  * @return void
  */
-void cargarMatrizAdyacencia(int** matrix, int size) {
+void cargarMatrizAdyacencia(float** matrix, int size) {
     if (adjMatrix != nullptr) {
-        for (int i = 0; i < matrixSize; i++)
-            delete[] adjMatrix[i];
+        for (int i = 0; i < matrixSize; i++) delete[] adjMatrix[i];
         delete[] adjMatrix;
     }
-
     matrixSize = size;
-    adjMatrix  = new int*[size];
+    adjMatrix  = new float*[size];
     for (int i = 0; i < size; i++) {
-        adjMatrix[i] = new int[size];
+        adjMatrix[i] = new float[size];
         for (int j = 0; j < size; j++)
             adjMatrix[i][j] = matrix[i][j];
     }
