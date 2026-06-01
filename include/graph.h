@@ -129,3 +129,9 @@ void cargarMatrizAdyacencia(float** matrix, int size);
 void imprimirGrafo();
 
 #endif
+
+/**
+ * @brief  Cuenta el numero de vertices en el grafo global
+ * @return numero de vertices en la lista enlazada global grafo
+ */
+int contarVertices();
