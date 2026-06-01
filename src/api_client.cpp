@@ -20,24 +20,22 @@
 static size_t writeCallback(void* content, size_t size, size_t nmemb, void* userp) {
     size_t totalBytes = size * nmemb;
     ResponseBuffer* buf = (ResponseBuffer*)userp;
-
     char* newData = (char*)realloc(buf->data, buf->size + totalBytes + 1);
     if (newData == nullptr) {
         cout << "Error: no se pudo reasignar memoria en writeCallback." << endl;
         return 0;
     }
-
     buf->data = newData;
     memcpy(buf->data + buf->size, content, totalBytes);
     buf->size += totalBytes;
     buf->data[buf->size] = '\0';
-
     return totalBytes;
 }
 
 /**
  * @brief  Realiza una peticion HTTP GET a BASE_URL + endpoint
  *         y copia la respuesta en result
+ *         Timeout de 60 segundos para tolerar cold start de la API en Render
  * @param  endpoint  ruta de la API e.g. "/galaxias"
  * @param  result    arreglo de chars donde se almacenara la respuesta
  * @param  maxLen    maximo de chars a copiar en result
@@ -45,21 +43,18 @@ static size_t writeCallback(void* content, size_t size, size_t nmemb, void* user
  */
 void httpGet(const char* endpoint, char* result, int maxLen) {
     result[0] = '\0';
-
     try {
         CURL* curl = curl_easy_init();
         if (curl == nullptr) {
             cout << "Error: no se pudo inicializar curl." << endl;
             return;
         }
-
         char url[512];
         snprintf(url, sizeof(url), "%s%s", BASE_URL, endpoint);
 
         ResponseBuffer buf;
         buf.data = (char*)malloc(1);
         buf.size = 0;
-
         if (buf.data == nullptr) {
             cout << "Error: no se pudo asignar memoria para el buffer." << endl;
             curl_easy_cleanup(curl);
@@ -69,10 +64,10 @@ void httpGet(const char* endpoint, char* result, int maxLen) {
         curl_easy_setopt(curl, CURLOPT_URL, url);
         curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, writeCallback);
         curl_easy_setopt(curl, CURLOPT_WRITEDATA, &buf);
-        curl_easy_setopt(curl, CURLOPT_TIMEOUT, 10L);
+        curl_easy_setopt(curl, CURLOPT_TIMEOUT, 60L);
+        curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
 
         CURLcode res = curl_easy_perform(curl);
-
         if (res != CURLE_OK) {
             cout << "Error en httpGet(" << endpoint << "): "
                  << curl_easy_strerror(res) << endl;
@@ -83,7 +78,6 @@ void httpGet(const char* endpoint, char* result, int maxLen) {
 
         free(buf.data);
         curl_easy_cleanup(curl);
-
     } catch (...) {
         cout << "Error inesperado en httpGet(" << endpoint << ")." << endl;
         result[0] = '\0';
