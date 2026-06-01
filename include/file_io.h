@@ -3,7 +3,7 @@
  * Descripcion: Helpers de lectura y escritura de archivos .txt en /output
  * Estructuras: ninguna propia
  * Funciones: abrirArchivo, escribirLinea, escribirEncabezado, escribirPie,
- *            escribirSeparador, cerrarArchivo, getCurrentTimestamp
+ *            escribirSeparador, cerrarArchivo
  * Creado: 2026
  * Ultima modificacion: 2026
  * Autores: <integrantes>
@@ -17,6 +17,7 @@
 #include <cstring>
 #include <cstdlib>
 #include <direct.h>
+#include "utils.h"
 using namespace std;
 
 /**
@@ -49,7 +50,6 @@ void escribirEncabezado(ofstream& archivo, const char* titulo);
 /**
  * @brief  Escribe pie de reporte formateado
  *         Formato: === separator + Fin del reporte.
- *         Usado por todos los reportes y por la consulta del arbol de Kruskal
  * @param  archivo  referencia a ofstream abierto
  * @return void
  */
@@ -69,14 +69,5 @@ void escribirSeparador(ofstream& archivo);
  * @return void
  */
 void cerrarArchivo(ofstream& archivo, const char* filename);
-
-/**
- * @brief  Obtiene la fecha y hora actual como string formateado
- *         Usa localtime_s para compatibilidad con Windows
- * @param  result   arreglo de chars donde se almacena el timestamp
- * @param  maxLen   maximo de caracteres a escribir en result
- * @return void
- */
-void getCurrentTimestamp(char* result, int maxLen);
 
 #endif

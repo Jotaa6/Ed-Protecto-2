@@ -1,9 +1,9 @@
 /*
  * Archivo: file_io.cpp
- * Descripcion: Implementacion de helpers de lectura y escritura de archivos .txt en /output
+ * Descripcion: Implementacion de helpers de archivos .txt en /output
  * Estructuras: ninguna propia
  * Funciones: abrirArchivo, escribirLinea, escribirEncabezado, escribirPie,
- *            escribirSeparador, cerrarArchivo, getCurrentTimestamp
+ *            escribirSeparador, cerrarArchivo
  * Creado: 2026
  * Ultima modificacion: 2026
  * Autores: <integrantes>
@@ -11,23 +11,8 @@
 #include "../include/file_io.h"
 
 /**
- * @brief  Obtiene la fecha y hora actual como string formateado
- *         Usa localtime_s para compatibilidad con Windows
- * @param  result   arreglo de chars donde se almacena el timestamp
- * @param  maxLen   maximo de caracteres a escribir en result
- * @return void
- */
-void getCurrentTimestamp(char* result, int maxLen) {
-    time_t now = time(nullptr);
-    struct tm t;
-    localtime_s(&t, &now);
-    strftime(result, maxLen, "%Y-%m-%d %H:%M:%S", &t);
-}
-
-/**
  * @brief  Abre un archivo .txt en /output/ para escritura
  *         Crea la carpeta /output si no existe usando _mkdir
- *         _mkdir no muestra error si la carpeta ya existe
  * @param  archivo   referencia a ofstream a abrir
  * @param  filename  nombre del archivo e.g. rutasMasCortas.txt
  * @return true si se abrio correctamente, false en caso de fallo
