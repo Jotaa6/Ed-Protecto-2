@@ -224,3 +224,17 @@ void imprimirGrafo() {
         temp = temp->sigV;
     }
 }
+
+/**
+ * @brief  Cuenta el numero de vertices en el grafo global
+ * @return numero de vertices en la lista enlazada global grafo
+ */
+int contarVertices() {
+    int count = 0;
+    Vertice* v = grafo;
+    while (v != nullptr) {
+        count++;
+        v = v->sigV;
+    }
+    return count;
+}
