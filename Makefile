@@ -1,32 +1,30 @@
 # Archivo: Makefile
-# Descripcion: Compilacion del proyecto
+# Descripcion: Compilacion del proyecto para Windows con MinGW y MSYS2
 # Creado: 2026
 # Autores: <integrantes>
 
-CXX = g++
-CXXFLAGS = -std=c++17 -Wall
-LIBS = -lcurl
-
-SRC_DIR = src
-INCLUDE_DIR = include
+CXX      = g++
+CXXFLAGS = -std=c++17 -Wall -I include -I "C:/msys64/mingw64/include"
+LIBS     = -L "C:/msys64/mingw64/lib" -lcurl
+SRC_DIR  = src
 BUILD_DIR = build
+TARGET   = galaxias.exe
 
 SOURCES = $(wildcard $(SRC_DIR)/*.cpp)
 OBJECTS = $(SOURCES:$(SRC_DIR)/%.cpp=$(BUILD_DIR)/%.o)
-TARGET = galaxias
 
 all: $(BUILD_DIR) $(TARGET)
 
 $(BUILD_DIR):
-	mkdir -p $(BUILD_DIR)
+	mkdir $(BUILD_DIR)
 
 $(TARGET): $(OBJECTS)
 	$(CXX) $(CXXFLAGS) $(OBJECTS) -o $(TARGET) $(LIBS)
 
 $(BUILD_DIR)/%.o: $(SRC_DIR)/%.cpp
-	$(CXX) $(CXXFLAGS) -I$(INCLUDE_DIR) -c $< -o $@
+	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 clean:
-	rm -rf $(BUILD_DIR) $(TARGET)
+	del /Q $(BUILD_DIR)\*.o $(TARGET) 2>nul || true
 
 .PHONY: all clean
