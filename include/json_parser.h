@@ -2,12 +2,12 @@
  * Archivo: json_parser.h
  * Descripcion: Parseo de JSON crudo a structs de C++ en tres capas
  * Estructuras: ninguna propia
- * Funciones: extractString, extractInt, extractFloat, splitJsonArray,
- *            extractObject, extractNestedArray, parseGalaxia, parseRuta,
- *            parseNave, parseViaje, parseGalaxias, parseGalaxiaById,
- *            parseRutas, parseRutaById, parseNaves, parseNaveById,
- *            parseHistorial, parseViajeById, parseHistorialNave,
- *            parseGrafo, parseKruskal, parseAdyacencia
+ * Funciones: extractString, extractInt, extractFloat, extractBool,
+ *            splitJsonArray, extractObject, extractNestedArray,
+ *            parseGalaxia, parseRuta, parseNave, parseViaje,
+ *            parseGalaxias, parseGalaxiaById, parseRutas, parseRutaById,
+ *            parseNaves, parseNaveById, parseHistorial, parseViajeById,
+ *            parseHistorialNave, parseGrafo, parseKruskal, parseAdyacencia
  * Creado: 2026
  * Ultima modificacion: 2026
  * Autores: <integrantes>
@@ -32,7 +32,7 @@ using namespace std;
  * @param  key     nombre del campo a buscar
  * @param  result  arreglo de chars de salida
  * @param  maxLen  max chars a copiar en result
- * @return void — result contiene el valor o cadena vacia si no se encuentra
+ * @return void
  */
 void extractString(const char* json, const char* key,
                    char* result, int maxLen);
@@ -54,11 +54,19 @@ int extractInt(const char* json, const char* key);
 float extractFloat(const char* json, const char* key);
 
 /**
- * @brief  Divide arreglo JSON en strings de objetos individuales
+ * @brief  Extrae valor bool para una clave en un objeto JSON plano
+ * @param  json  JSON crudo
+ * @param  key   nombre del campo a buscar
+ * @return true si el valor es "true", false en caso contrario
+ */
+bool extractBool(const char* json, const char* key);
+
+/**
+ * @brief  Divide arreglo JSON en strings de objetos o sub-arreglos individuales
  * @param  jsonArray  arreglo JSON crudo
- * @param  results    arreglo de salida donde se almacenan los objetos
- * @param  maxItems   max objetos a extraer
- * @param  count      salida — numero de objetos encontrados
+ * @param  results    arreglo de salida
+ * @param  maxItems   max elementos a extraer
+ * @param  count      salida — numero de elementos encontrados
  * @return void
  */
 void splitJsonArray(const char* jsonArray, char results[][2048],
@@ -67,9 +75,9 @@ void splitJsonArray(const char* jsonArray, char results[][2048],
 /**
  * @brief  Extrae string de objeto anidado para una clave
  * @param  json    JSON crudo
- * @param  key     nombre del campo cuyo valor es un objeto
- * @param  result  salida — objeto extraido como string
- * @param  maxLen  max chars a copiar
+ * @param  key     campo cuyo valor es un objeto
+ * @param  result  salida
+ * @param  maxLen  max chars
  * @return void
  */
 void extractObject(const char* json, const char* key,
@@ -78,9 +86,9 @@ void extractObject(const char* json, const char* key,
 /**
  * @brief  Extrae string de arreglo anidado para una clave
  * @param  json    JSON crudo
- * @param  key     nombre del campo cuyo valor es un arreglo
- * @param  result  salida — arreglo extraido como string
- * @param  maxLen  max chars a copiar
+ * @param  key     campo cuyo valor es un arreglo
+ * @param  result  salida
+ * @param  maxLen  max chars
  * @return void
  */
 void extractNestedArray(const char* json, const char* key,
@@ -188,6 +196,7 @@ void parseHistorialNave(const char* json, Trip*& head);
 
 /**
  * @brief  Parsea GET /grafo en listas de Galaxy y Edge
+ *         El endpoint devuelve objeto con "nodos" y "aristas"
  * @param  json   respuesta del endpoint
  * @param  gHead  salida — cabeza de la lista de Galaxy
  * @param  eHead  salida — cabeza de la lista de Edge
@@ -197,7 +206,7 @@ void parseGrafo(const char* json, Galaxy*& gHead, Edge*& eHead);
 
 /**
  * @brief  Parsea GET /grafo/kruskal en lista enlazada de Edge
- *         Las aristas vienen en orden aleatorio desde la API
+ *         El endpoint devuelve objeto con "aristas" en orden aleatorio
  * @param  json  respuesta del endpoint
  * @param  head  salida — cabeza de la lista resultante
  * @return void
@@ -205,13 +214,15 @@ void parseGrafo(const char* json, Galaxy*& gHead, Edge*& eHead);
 void parseKruskal(const char* json, Edge*& head);
 
 /**
- * @brief  Parsea GET /grafo/adyacencia en matriz dinamica int**
- *         Asigna memoria dinamica — quien llama es responsable de liberarla
+ * @brief  Parsea GET /grafo/adyacencia en matriz dinamica float**
+ *         El endpoint devuelve objeto con "orden", "nodos" y "matriz"
+ *         Los valores pueden ser null (0.0) o float
+ *         Quien llama es responsable de liberar la memoria
  * @param  json    respuesta del endpoint
- * @param  matrix  salida — matriz dinamica int** con los valores
+ * @param  matrix  salida — matriz dinamica float**
  * @param  size    salida — numero de filas y columnas
  * @return void
  */
-void parseAdyacencia(const char* json, int**& matrix, int& size);
+void parseAdyacencia(const char* json, float**& matrix, int& size);
 
 #endif
