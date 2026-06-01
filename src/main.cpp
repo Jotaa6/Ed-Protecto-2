@@ -1,33 +1,29 @@
 /*
  * Archivo: main.cpp
- * Descripcion: Punto de entrada del programa
- * Estructuras: ninguna propia
- * Funciones: main
+ * Descripcion: Main temporal para probar carga de datos y grafo
  * Creado: 2026
- * Ultima modificacion: 2026
  * Autores: <integrantes>
  */
 #include <iostream>
-#include <cstdlib>
+#include <direct.h>
 #include "../include/data_loader.h"
-#include "../include/menu.h"
+#include "../include/graph.h"
+#include "../include/kruskal.h"
 using namespace std;
 
-/**
- * @brief  Punto de entrada del programa
- *         Crea /output, carga todos los datos de la API y muestra el menu
- * @return 0 en salida limpia, 1 en error irrecuperable
- */
 int main() {
     _mkdir("output");
     try {
         loadAll();
-        showMainMenu();
+        cout << "\n=== Verificacion del grafo ===" << endl;
+        imprimirGrafo();
+        cout << "\n=== Verificacion del MST ===" << endl;
+        imprimirMST(mstResult);
     } catch (const exception& e) {
         cout << "Error critico: " << e.what() << endl;
         return 1;
     } catch (...) {
-        cout << "Error inesperado. El programa se cerrara." << endl;
+        cout << "Error inesperado." << endl;
         return 1;
     }
     return 0;
