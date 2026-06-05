@@ -50,7 +50,7 @@ void loadAll() {
         cout << "   Error en Paso 1 — continuando." << endl;
     }
 
-    // Paso 2 — Rutas
+    // Paso 2 — Rutas (insertar en ambos sentidos para grafo no dirigido)
     try {
         printLoadStep(2, "Cargando rutas");
         httpGet("/rutas", json, sizeof(json));
@@ -58,7 +58,9 @@ void loadAll() {
             parseRutas(json, globalEdges);
             Edge* e = globalEdges;
             while (e != nullptr) {
+                // Insertar arco en ambos sentidos (grafo no dirigido)
                 insertarArco(e->originId, e->destinationId, e->cost);
+                insertarArco(e->destinationId, e->originId, e->cost);
                 e = e->siguiente;
             }
             int count = 0;

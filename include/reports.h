@@ -3,8 +3,8 @@
  * Descripcion: Generacion de reportes en archivos .txt en /output
  * Estructuras: ninguna propia
  * Funciones: generarReporteRutasCortas, generarReporteRutaOptimizada,
- *            generarReporteEstadisticas
- * Creado: 5/6/2026
+ *            generarReporteEstadisticas, generarTodosLosReportes
+ * Creado: 2026
  * Ultima modificacion: 2026
  * Autores: Santiago Eloy Céspedes Mora
  */
@@ -24,25 +24,33 @@
 using namespace std;
 
 /**
- * @brief  Genera /output/rutasMasCortas.txt con todos los resultados Dijkstra de la sesion
+ * @brief  Genera /output/rutasMasCortas.txt con todos los resultados
+ *         Dijkstra de la sesion
  *         Escribe mensaje de sin datos si dijkstraCount es 0
  * @return void
  */
 void generarReporteRutasCortas();
 
 /**
- * @brief  Genera /output/rutaOptimizada.txt con la lista completa de aristas del MST
- *         Version formal del reporte separada de resultantesKruskal.txt
+ * @brief  Genera /output/rutaOptimizada.txt con la lista completa
+ *         de aristas del MST
  *         Llama buildMST() primero si mstResult es nullptr
  * @return void
  */
 void generarReporteRutaOptimizada();
 
 /**
- * @brief  Genera /output/estadisticas.txt con las estadisticas de la sesion
- *         Utiliza las funciones del modulo stats
+ * @brief  Genera /output/estadisticas.txt con estadisticas de la sesion
+ *         Secciones: rutas calculadas, costo promedio, galaxia mas conectada,
+ *         comparacion MST vs original, conteos totales
  * @return void
  */
 void generarReporteEstadisticas();
+
+/**
+ * @brief  Genera los tres reportes de una sola vez
+ * @return void
+ */
+void generarTodosLosReportes();
 
 #endif

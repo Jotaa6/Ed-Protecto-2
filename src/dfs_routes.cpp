@@ -20,7 +20,7 @@
  * @param  count   puntero al contador de caminos encontrados
  * @return void
  */
-void dfsTodasLasRutas(Vertice* origen, string ruta, int costo, int* count) {
+void dfsTodasLasRutas(Vertice* origen, string ruta, float costo, float* count) {
     if (origen == nullptr || *count >= 50) {
         return;
     }
@@ -44,7 +44,7 @@ void dfsTodasLasRutas(Vertice* origen, string ruta, int costo, int* count) {
                 nombreVecino = galaxyVecino->name;
             }
             string nuevaRuta = ruta + " > " + nombreVecino;
-            int nuevoCosto = costo + (int)arco->costo;
+            float nuevoCosto = costo + (float)arco->costo;
             (*count)++;
             cout << *count << ". " << nuevaRuta << " | Costo: " << nuevoCosto << endl;
             dfsTodasLasRutas(vecino, nuevaRuta, nuevoCosto, count);
@@ -74,7 +74,7 @@ void mostrarTodasLasRutas(string galaxyId) {
     if (galaxyOrigen != nullptr) {
         nombreOrigen = galaxyOrigen->name;
     }
-    int count = 0;
+    float count = 0;
     cout << "\n=== TODAS LAS RUTAS DESDE " << nombreOrigen << " ===" << endl;
     dfsTodasLasRutas(origen, nombreOrigen, 0, &count);
     if (count == 0) {
