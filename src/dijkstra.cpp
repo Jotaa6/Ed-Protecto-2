@@ -5,10 +5,10 @@
  * Funciones: dijkstra, imprimirRutaDijkstra, getUltimoResultado
  * Creado: 1/6/2026
  * Ultima modificacion: 2026
- * Autores: Santiago Eloy Céspedes mora
+ * Autores: Santiago Eloy Céspedes Mora
  */
 #include "../include/dijkstra.h"
-#include <climits>
+#include <cfloat>
 
 // Lista global de resultados Dijkstra
 DijkstraResult* dijkstraResults = nullptr;
@@ -34,8 +34,8 @@ int buscarIndiceDijkstra(Vertice* vertices[], int cantidad, string id) {
  * @param  destinoId  id de la galaxia destino
  * @return costo total del camino mas corto, o -1 si no es alcanzable
  */
-int dijkstra(string origenId, string destinoId) {
-    int dist[100];
+float dijkstra(string origenId, string destinoId) {
+    float dist[100];
     bool visited[100];
     int prev[100];
     Vertice* vertices[100];
@@ -55,16 +55,15 @@ int dijkstra(string origenId, string destinoId) {
     }
     // Inicializa los arreglos
     for (int i = 0; i < cantidad; i++) {
-        dist[i] = INT_MAX;
+        dist[i] = FLT_MAX;
         visited[i] = false;
         prev[i] = -1;
     }
-
     dist[origen] = 0;
 
     // Ejecuta Dijkstra con escaneo lineal manual
     for (int i = 0; i < cantidad; i++) {
-        int menor = INT_MAX;
+        float menor = FLT_MAX;
         int actual = -1;
         // Busca el nodo no visitado con menor distancia
         for (int j = 0; j < cantidad; j++) {
@@ -81,8 +80,8 @@ int dijkstra(string origenId, string destinoId) {
         // Recorre las conexiones del nodo actual
         while (arco != nullptr) {
             int vecino = buscarIndiceDijkstra(vertices, cantidad, arco->destinoId);
-            if (vecino != -1 && visited[vecino] == false && dist[actual] != INT_MAX) {
-                int nuevoCosto = dist[actual] + (int)arco->costo;
+            if (vecino != -1 && visited[vecino] == false && dist[actual] != FLT_MAX) {
+                float nuevoCosto = dist[actual] + arco->costo;
                 if (nuevoCosto < dist[vecino]) {
                     dist[vecino] = nuevoCosto;
                     prev[vecino] = actual;
@@ -91,7 +90,8 @@ int dijkstra(string origenId, string destinoId) {
             arco = arco->sigA;
         }
     }
-    if (dist[destino] == INT_MAX) {
+
+    if (dist[destino] == FLT_MAX) {
         return -1;
     }
     DijkstraResult* nuevo = new DijkstraResult;

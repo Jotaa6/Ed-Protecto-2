@@ -8,6 +8,7 @@
  * Autores: Santiago Eloy Céspedes Mora
  */
 #include "../include/dfs_routes.h"
+#include "../include/utils.h"
 
 /**
  * @brief  Encuentra e imprime recursivamente todos los caminos desde origen
@@ -37,7 +38,12 @@ void dfsTodasLasRutas(Vertice* origen, string ruta, int costo, int* count) {
     while (arco != nullptr && *count < 50) {
         Vertice* vecino = buscarVertice(arco->destinoId);
         if (vecino != nullptr && vecino->visitado == false) {
-            string nuevaRuta = ruta + " > " + vecino->galaxyId;
+            Galaxy* galaxyVecino = findGalaxyById(vecino->galaxyId);
+            string nombreVecino = vecino->galaxyId;
+            if (galaxyVecino != nullptr) {
+                nombreVecino = galaxyVecino->name;
+            }
+            string nuevaRuta = ruta + " > " + nombreVecino;
             int nuevoCosto = costo + (int)arco->costo;
             (*count)++;
             cout << *count << ". " << nuevaRuta << " | Costo: " << nuevoCosto << endl;
@@ -63,9 +69,14 @@ void mostrarTodasLasRutas(string galaxyId) {
         return;
     }
     desmarcarVertices();
+    Galaxy* galaxyOrigen = findGalaxyById(origen->galaxyId);
+    string nombreOrigen = origen->galaxyId;
+    if (galaxyOrigen != nullptr) {
+        nombreOrigen = galaxyOrigen->name;
+    }
     int count = 0;
-    cout << "\n=== TODAS LAS RUTAS DESDE " << origen->galaxyId << " ===" << endl;
-    dfsTodasLasRutas(origen, origen->galaxyId, 0, &count);
+    cout << "\n=== TODAS LAS RUTAS DESDE " << nombreOrigen << " ===" << endl;
+    dfsTodasLasRutas(origen, nombreOrigen, 0, &count);
     if (count == 0) {
         cout << "La galaxia no tiene rutas de salida." << endl;
     }

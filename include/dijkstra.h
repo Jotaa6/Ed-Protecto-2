@@ -12,7 +12,6 @@
 
 #include <iostream>
 #include <string>
-#include <climits>
 #include "graph.h"
 #include "galaxy.h"
 
@@ -32,7 +31,7 @@ struct DijkstraResult {
     string toId;
     string path[100];
     int pathLen;
-    int cost;
+    float cost;
     DijkstraResult* siguiente;
 };
 
@@ -41,14 +40,14 @@ extern int dijkstraCount;
 
 /**
  * @brief  Encuentra el camino de menor costo entre dos galaxias usando Dijkstra
- *         Usa arreglos planos de int y escaneo lineal manual
- *         Almacena el resultado en la lista global dijkstraResults
+ *         Usa arreglos planos de float con escaneo lineal manual
+ *         Almacena resultado en lista global dijkstraResults
  *         Incrementa dijkstraCount global
  * @param  origenId   id de la galaxia origen
  * @param  destinoId  id de la galaxia destino
  * @return costo total del camino mas corto, o -1 si no es alcanzable
  */
-int dijkstra(string origenId, string destinoId);
+float dijkstra(string origenId, string destinoId);
 
 /**
  * @brief  Imprime el camino almacenado en un DijkstraResult
