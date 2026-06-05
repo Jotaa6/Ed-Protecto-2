@@ -116,3 +116,58 @@ void imprimirComparacionMST(ofstream& archivo) {
         mst = mst->siguiente;
     }
 }
+/**
+ * @brief  Retorna el total de rutas/aristas cargadas en la lista global
+ * @return cantidad de aristas en globalEdges
+ */
+int getTotalRutas() {
+    int total = 0;
+    Edge* actual = globalEdges;
+    // Recorre la lista global de aristas
+    while (actual != nullptr) {
+        total++;
+        actual = actual->siguiente;
+    }
+    return total;
+}
+
+/**
+ * @brief  Obtiene las 5 galaxias con mayor cantidad de arcos de salida
+ * @param  nombres  arreglo donde se guardan los nombres de las galaxias
+ * @param  grados   arreglo donde se guardan los grados de salida
+ * @return void
+ */
+void getTop5GalaxiasMasConectadas(string nombres[5], int grados[5]) {
+    for (int i = 0; i < 5; i++) {
+        nombres[i] = "N/A";
+        grados[i] = 0;
+    }
+    Vertice* actual = grafo;
+    while (actual != nullptr) {
+        int grado = 0;
+        Arco* arco = actual->subListaArcos;
+        // Cuenta los arcos de salida
+        while (arco != nullptr) {
+            grado++;
+            arco = arco->sigA;
+        }
+        Galaxy* galaxia = findGalaxyById(actual->galaxyId);
+        string nombre = actual->galaxyId;
+        if (galaxia != nullptr) {
+            nombre = galaxia->name;
+        }
+        // Inserta la galaxia en el top 5 si corresponde
+        for (int i = 0; i < 5; i++) {
+            if (grado > grados[i]) {
+                for (int j = 4; j > i; j--) {
+                    grados[j] = grados[j - 1];
+                    nombres[j] = nombres[j - 1];
+                }
+                grados[i] = grado;
+                nombres[i] = nombre;
+                break;
+            }
+        }
+        actual = actual->sigV;
+    }
+}

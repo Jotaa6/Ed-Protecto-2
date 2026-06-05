@@ -32,8 +32,18 @@ void generarReporteRutasCortas() {
     // Recorre la lista enlazada de resultados Dijkstra
     while (actual != nullptr) {
         archivo << "\nRuta #" << contador << endl;
-        archivo << "Origen: " << actual->fromId << endl;
-        archivo << "Destino: " << actual->toId << endl;
+    Galaxy* origen = findGalaxyById(actual->fromId);
+    Galaxy* destino = findGalaxyById(actual->toId);
+    string nombreOrigen = actual->fromId;
+    string nombreDestino = actual->toId;
+    if (origen != nullptr) {
+        nombreOrigen = origen->name;
+    }
+    if (destino != nullptr) {
+        nombreDestino = destino->name;
+    }
+    archivo << "Origen: " << nombreOrigen << endl;
+    archivo << "Destino: " << nombreDestino << endl;
         archivo << "Camino: ";
         for (int i = 0; i < actual->pathLen; i++) {
             Galaxy* galaxia = findGalaxyById(actual->path[i]);
@@ -58,24 +68,18 @@ void generarReporteRutasCortas() {
 /**
  * @brief  Genera /output/rutaOptimizada.txt con la lista completa de aristas del MST
  *         Version formal del reporte separada de resultantesKruskal.txt
- *         Llama buildMST() primero si mstResult es nullptr
  * @return void
  */
 void generarReporteRutaOptimizada() {
     ofstream archivo;
     if (mstResult == nullptr) {
-        buildMST(globalEdges, contarVertices());
+        cout << "Error: No se ha construido el MST. Ejecute la carga de datos primero." << endl;
+        return;
     }
     if (!abrirArchivo(archivo, "rutaOptimizada.txt")) {
         return;
     }
     escribirEncabezado(archivo, "REPORTE DE RUTA OPTIMIZADA");
-    if (mstResult == nullptr) {
-        archivo << "No hay datos del arbol de expansion minima." << endl;
-        escribirPie(archivo);
-        cerrarArchivo(archivo, "rutaOptimizada.txt");
-        return;
-    }
     Edge* actual = mstResult;
     int contador = 1;
     // Recorre la lista enlazada del MST
@@ -121,6 +125,24 @@ void generarReporteEstadisticas() {
     archivo << "Costo promedio de rutas: "<< getCostoPromedio() << endl;
     archivo << endl;
     imprimirComparacionMST(archivo);
+    archivo << endl;
+    archivo << "=== TOTAL GALAXIAS Y RUTAS ===" << endl;
+    archivo << "Total galaxias: " << contarVertices()
+            << " | Total rutas: " << getTotalRutas() << endl;
+
+    archivo << endl;
+    archivo << "=== TOP 5 GALAXIAS MAS CONECTADAS ===" << endl;
+
+    string nombres[5];
+    int grados[5];
+
+    getTop5GalaxiasMasConectadas(nombres, grados);
+
+    for (int i = 0; i < 5; i++) {
+        if (grados[i] > 0) {
+            archivo << nombres[i]<< " - Grado: "<< grados[i]<< endl;
+        }
+    }
     escribirPie(archivo);
     cerrarArchivo(archivo, "estadisticas.txt");
 }
