@@ -19,6 +19,7 @@
 #include "edge.h"
 #include "kruskal.h"
 #include "dijkstra.h"
+#include <string>
 #include "utils.h"
 
 using namespace std;
@@ -49,5 +50,18 @@ float getCostoPromedio();
  * @return void
  */
 void imprimirComparacionMST(ofstream& archivo);
+/**
+ * @brief  Retorna el total de rutas/aristas cargadas en la lista global
+ * @return cantidad de aristas en globalEdges
+ */
+int getTotalRutas();
+
+/**
+ * @brief  Obtiene las 5 galaxias con mayor cantidad de arcos de salida
+ * @param  nombres  arreglo donde se guardan los nombres de las galaxias
+ * @param  grados   arreglo donde se guardan los grados de salida
+ * @return void
+ */
+void getTop5GalaxiasMasConectadas(string nombres[5], int grados[5]);
 
 #endif

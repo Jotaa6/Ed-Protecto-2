@@ -6,16 +6,21 @@
  *            generarReporteEstadisticas, generarTodosLosReportes
  * Creado: 2026
  * Ultima modificacion: 2026
- * Autores: <integrantes>
+ * Autores: Santiago Eloy Céspedes Mora
  */
 #ifndef REPORTS_H
 #define REPORTS_H
 
+#include <iostream>
 #include "file_io.h"
 #include "dijkstra.h"
 #include "kruskal.h"
-#include "stats.h"
 #include "galaxy.h"
+#include "graph.h"
+#include "edge.h"
+#include "utils.h"
+#include "stats.h"
+
 using namespace std;
 
 /**
