@@ -20,7 +20,7 @@
  * @param  count   puntero al contador de caminos encontrados
  * @return void
  */
-void dfsTodasLasRutas(Vertice* origen, string ruta, float costo, int* count) {
+void dfsTodasLasRutas(Vertice* origen, string ruta, float costo, float* count) {
     if (origen == nullptr || *count >= 50) {
         return;
     }
