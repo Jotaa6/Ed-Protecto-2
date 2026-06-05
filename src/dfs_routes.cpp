@@ -44,7 +44,7 @@ void dfsTodasLasRutas(Vertice* origen, string ruta, int costo, int* count) {
                 nombreVecino = galaxyVecino->name;
             }
             string nuevaRuta = ruta + " > " + nombreVecino;
-            int nuevoCosto = costo + (int)arco->costo;
+            float nuevoCosto = costo + (float)arco->costo;
             (*count)++;
             cout << *count << ". " << nuevaRuta << " | Costo: " << nuevoCosto << endl;
             dfsTodasLasRutas(vecino, nuevaRuta, nuevoCosto, count);
