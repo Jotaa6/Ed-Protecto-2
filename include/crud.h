@@ -11,6 +11,7 @@
 #define CRUD_H
 
 #include <iostream>
+#include <string>
 #include "../include/utils.h"
 
 using namespace std;
@@ -28,9 +29,9 @@ struct CrudConfig {
     const char* entityName;
     void  (*listAll)();
     void  (*add)();
-    void  (*edit)(int id);
-    void  (*remove)(int id);
-    void* (*findById)(int id);
+    void  (*edit)(string id);
+    void  (*remove)(string id);
+    void* (*findById)(string id);
 };
 
 /**
@@ -45,8 +46,8 @@ void runCrud(CrudConfig config);
 /**
  * @brief  Solicita y valida un id de forma generica
  * @param  config  CrudConfig de la entidad siendo buscada
- * @return id ingresado por el usuario, o -1 si no se encuentra
+ * @return id ingresado por el usuario, o "" si no se encuentra
  */
-int promptAndValidateId(CrudConfig config);
+string promptAndValidateId(CrudConfig config);
 
 #endif

@@ -12,29 +12,27 @@
 /**
  * @brief  Solicita y valida un id de forma generica
  * @param  config  CrudConfig de la entidad siendo buscada
- * @return id ingresado por el usuario, o -1 si no se encuentra
+ * @return id ingresado por el usuario, o "" si no se encuentra
  */
-int promptAndValidateId(CrudConfig config) {
-    int id;
+string promptAndValidateId(CrudConfig config) {
+    string id;
 
     cout << "Ingrese el ID de " << config.entityName << ": ";
     cin >> id;
 
-    if (cin.fail()) {
-        cin.clear();
-        cin.ignore(1000, '\n');
+    if (id == "") {
         cout << "ID invalido." << endl;
-        return -1;
+        return "";
     }
 
     if (config.findById == nullptr) {
         cout << "No existe funcion de busqueda para " << config.entityName << "." << endl;
-        return -1;
+        return "";
     }
 
     if (config.findById(id) == nullptr) {
         cout << config.entityName << " no encontrado." << endl;
-        return -1;
+        return "";
     }
 
     return id;
@@ -68,6 +66,7 @@ void runCrud(CrudConfig config) {
             opcion = -1;
             continue;
         }
+
         switch (opcion) {
             case 1:
                 try {
@@ -80,6 +79,7 @@ void runCrud(CrudConfig config) {
                     cout << "Ocurrio un error al listar." << endl;
                 }
                 break;
+
             case 2:
                 try {
                     if (config.add != nullptr) {
@@ -91,11 +91,13 @@ void runCrud(CrudConfig config) {
                     cout << "Ocurrio un error al agregar." << endl;
                 }
                 break;
+
             case 3:
                 try {
                     if (config.edit != nullptr) {
-                        int id = promptAndValidateId(config);
-                        if (id != -1) {
+                        string id = promptAndValidateId(config);
+
+                        if (id != "") {
                             config.edit(id);
                         }
                     } else {
@@ -109,9 +111,9 @@ void runCrud(CrudConfig config) {
             case 4:
                 try {
                     if (config.remove != nullptr) {
-                        int id = promptAndValidateId(config);
+                        string id = promptAndValidateId(config);
 
-                        if (id != -1) {
+                        if (id != "") {
                             config.remove(id);
                         }
                     } else {
@@ -123,21 +125,23 @@ void runCrud(CrudConfig config) {
                 break;
             case 5:
                 try {
-                    int id = promptAndValidateId(config);
-
-                    if (id != -1) {
+                    string id = promptAndValidateId(config);
+                    if (id != "") {
                         cout << config.entityName << " encontrado correctamente." << endl;
                     }
                 } catch (...) {
                     cout << "Ocurrio un error al buscar." << endl;
                 }
                 break;
+
             case 0:
-                cout << "Regresando al menu anterior" << endl;
+                cout << "Regresando al menu anterior..." << endl;
                 break;
+
             default:
                 cout << "Opcion invalida." << endl;
                 break;
         }
+
     } while (opcion != 0);
 }
