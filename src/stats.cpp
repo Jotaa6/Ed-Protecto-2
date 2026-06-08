@@ -3,7 +3,8 @@
  * Descripcion: Implementacion del motor de estadisticas
  * Estructuras: ninguna propia
  * Funciones: getTotalRutasCalculadas, getGalaxiaMasConectada,
- *            getCostoPromedio, imprimirComparacionMST
+ *            getCostoPromedio, imprimirComparacionMST,
+ *            getTotalRutas, getTop5GalaxiasMasConectadas
  * Creado: 4/6/2026
  * Ultima modificacion: 2026
  * Autores: Santiago Eloy Céspedes Mora
@@ -33,7 +34,6 @@ void getGalaxiaMasConectada(char* result, int& degree) {
     while (actual != nullptr) {
         int contador = 0;
         Arco* arco = actual->subListaArcos;
-        // Cuenta los arcos de salida del vertice actual
         while (arco != nullptr) {
             contador++;
             arco = arco->sigA;
@@ -59,17 +59,14 @@ void getGalaxiaMasConectada(char* result, int& degree) {
  */
 float getCostoPromedio() {
     Edge* actual = globalEdges;
-    float suma = 0;
+    float suma   = 0;
     int cantidad = 0;
-    // Recorre la lista global de aristas
     while (actual != nullptr) {
         suma += actual->cost;
         cantidad++;
         actual = actual->siguiente;
     }
-    if (cantidad == 0) {
-        return 0.0;
-    }
+    if (cantidad == 0) return 0.0f;
     return suma / cantidad;
 }
 
@@ -81,9 +78,8 @@ float getCostoPromedio() {
 void imprimirComparacionMST(ofstream& archivo) {
     archivo << "=== COMPARACION MST VS COSTOS ORIGINALES ===" << endl;
     float costoOriginal = 0;
-    int totalOriginal = 0;
+    int totalOriginal   = 0;
     Edge* actual = globalEdges;
-    // Calcula el costo total de las aristas originales
     while (actual != nullptr) {
         costoOriginal += actual->cost;
         totalOriginal++;
@@ -100,71 +96,72 @@ void imprimirComparacionMST(ofstream& archivo) {
     archivo << "Ahorro aproximado: " << costoOriginal - mstTotalCost << endl;
     archivo << "\nAristas del MST:" << endl;
     Edge* mst = mstResult;
-    // Imprime las aristas que forman el MST
     while (mst != nullptr) {
-        Galaxy* origen = findGalaxyById(mst->originId);
+        Galaxy* origen  = findGalaxyById(mst->originId);
         Galaxy* destino = findGalaxyById(mst->destinationId);
-        string nombreOrigen = mst->originId;
+        string nombreOrigen  = mst->originId;
         string nombreDestino = mst->destinationId;
-        if (origen != nullptr) {
-            nombreOrigen = origen->name;
-        }
-        if (destino != nullptr) {
-            nombreDestino = destino->name;
-        }
-        archivo << nombreOrigen << " -> " << nombreDestino << " | Costo: " << mst->cost << endl;
+        if (origen  != nullptr) nombreOrigen  = origen->name;
+        if (destino != nullptr) nombreDestino = destino->name;
+        archivo << nombreOrigen << " -> " << nombreDestino
+                << " | Costo: " << mst->cost << endl;
         mst = mst->siguiente;
     }
 }
+
 /**
  * @brief  Retorna el total de rutas/aristas cargadas en la lista global
  * @return cantidad de aristas en globalEdges
  */
 int getTotalRutas() {
-    int total = 0;
+    int count    = 0;
     Edge* actual = globalEdges;
-    // Recorre la lista global de aristas
     while (actual != nullptr) {
-        total++;
+        count++;
         actual = actual->siguiente;
     }
-    return total;
+    return count;
 }
 
 /**
  * @brief  Obtiene las 5 galaxias con mayor cantidad de arcos de salida
+ *         Usa seleccion manual sin STL
  * @param  nombres  arreglo donde se guardan los nombres de las galaxias
  * @param  grados   arreglo donde se guardan los grados de salida
  * @return void
  */
 void getTop5GalaxiasMasConectadas(string nombres[5], int grados[5]) {
+    // Inicializar arreglos
     for (int i = 0; i < 5; i++) {
-        nombres[i] = "N/A";
-        grados[i] = 0;
+        nombres[i] = "";
+        grados[i]  = 0;
     }
+
     Vertice* actual = grafo;
     while (actual != nullptr) {
-        int grado = 0;
-        Arco* arco = actual->subListaArcos;
-        // Cuenta los arcos de salida
+        // Contar arcos de salida
+        int contador = 0;
+        Arco* arco   = actual->subListaArcos;
         while (arco != nullptr) {
-            grado++;
+            contador++;
             arco = arco->sigA;
         }
+
+        // Obtener nombre de la galaxia
         Galaxy* galaxia = findGalaxyById(actual->galaxyId);
-        string nombre = actual->galaxyId;
-        if (galaxia != nullptr) {
-            nombre = galaxia->name;
-        }
-        // Inserta la galaxia en el top 5 si corresponde
+        string nombre   = actual->galaxyId;
+        if (galaxia != nullptr) nombre = galaxia->name;
+
+        // Insertar en el top 5 si corresponde
         for (int i = 0; i < 5; i++) {
-            if (grado > grados[i]) {
+            if (contador > grados[i]) {
+                // Desplazar los menores hacia abajo
                 for (int j = 4; j > i; j--) {
-                    grados[j] = grados[j - 1];
                     nombres[j] = nombres[j - 1];
+                    grados[j]  = grados[j - 1];
                 }
-                grados[i] = grado;
                 nombres[i] = nombre;
+                grados[i]  = contador;
                 break;
             }
         }
