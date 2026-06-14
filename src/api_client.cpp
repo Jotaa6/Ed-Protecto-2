@@ -19,13 +19,20 @@
  */
 static size_t writeCallback(void* content, size_t size, size_t nmemb, void* userp) {
     size_t totalBytes = size * nmemb;
+    
+    if (userp == nullptr)
+        return 0;
     ResponseBuffer* buf = (ResponseBuffer*)userp;
+
     char* newData = (char*)realloc(buf->data, buf->size + totalBytes + 1);
     if (newData == nullptr) {
         cout << "Error: no se pudo reasignar memoria en writeCallback." << endl;
         return 0;
     }
     buf->data = newData;
+    if (content == nullptr)
+        return 0;
+
     memcpy(buf->data + buf->size, content, totalBytes);
     buf->size += totalBytes;
     buf->data[buf->size] = '\0';

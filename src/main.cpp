@@ -1,13 +1,12 @@
 /*
  * Archivo: main.cpp
- * Descripcion: Main temporal para probar carga de datos y grafo
+ * Descripcion: Punto de entrada del sistema
+ *              Inicializa la carga de datos y muestra el menu principal
  * Creado: 2026
  * Autores: <José Pablo Barrantes
  */
 #include <iostream>
 #include <direct.h>
-#include "../include/graph.h"
-#include "../include/kruskal.h"
 #include "../include/data_loader.h"
 #include "../include/menu.h"
 using namespace std;
@@ -30,7 +29,7 @@ int main() {
         return 1;
     }
     catch (...) {
-        cout << "Error inesperado." << endl;
+        cout << "Error inesperado. El programa se cerrara." << endl;
         return 1;
     }
 
