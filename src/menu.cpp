@@ -7,7 +7,7 @@
  *            showReportesSubmenu
  * Creado: 2026
  * Ultima modificacion: 2026
- * Autores: <integrantes>
+ * Autores: José Pablo Barrantes
  */
 #include "../include/menu.h"
 

@@ -2,7 +2,7 @@
  * Archivo: main.cpp
  * Descripcion: Main temporal para probar carga de datos y grafo
  * Creado: 2026
- * Autores: <integrantes>
+ * Autores: <José Pablo Barrantes
  */
 #include <iostream>
 #include <direct.h>
