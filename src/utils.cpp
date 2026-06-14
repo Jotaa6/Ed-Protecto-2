@@ -128,3 +128,4 @@ Trip* findTripById(string id) {
     }
     return nullptr;
 }
+
