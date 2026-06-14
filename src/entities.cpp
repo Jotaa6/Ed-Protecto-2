@@ -35,11 +35,7 @@ void listarGalaxias() {
         cout << "Nombre: " << actual->name << endl;
         cout << "Codigo: " << actual->code << endl;
         cout << "Tipo: " << actual->type << endl;
-        cout << "Coordenadas: ("
-             << actual->x << ", "
-             << actual->y << ", "
-             << actual->z << ")" << endl;
-
+        cout << "Coordenadas: (" << actual->x << ", " << actual->y << ", " << actual->z << ")" << endl;
         actual = actual->siguiente;
     }
 }
@@ -58,6 +54,13 @@ void agregarGalaxia() {
     pedirCadena("ID: ", buffer, 100);
     nueva->id = buffer;
 
+    //Verificar ID duplicado
+    if (findGalaxyById(nueva->id) != nullptr) {
+        cout << "\nYa registrado." << endl;
+        delete nueva;
+        return;
+    }
+
     pedirCadena("Nombre: ", buffer, 100);
     nueva->name = buffer;
 
@@ -67,22 +70,15 @@ void agregarGalaxia() {
     pedirCadena("Tipo: ", buffer, 100);
     nueva->type = buffer;
 
-    cout << "Coordenada X: ";
-    cin >> nueva->x;
-
-    cout << "Coordenada Y: ";
-    cin >> nueva->y;
-
-    cout << "Coordenada Z: ";
-    cin >> nueva->z;
-    cin.ignore();
+    nueva->x = pedirFloat("Coordenada X: ");
+    nueva->y = pedirFloat("Coordenada Y: ");
+    nueva->z = pedirFloat("Coordenada Z: ");
 
     Galaxy* temp = globalGalaxias;
 
     while (temp != nullptr) {
 
         if (temp->code == nueva->code) {
-
             cout << "\nYa existe una galaxia con ese codigo." << endl;
             delete nueva;
             return;
@@ -92,23 +88,17 @@ void agregarGalaxia() {
     }
 
     nueva->siguiente = nullptr;
-
     if (globalGalaxias == nullptr) {
-
         globalGalaxias = nueva;
-
     } else {
 
         temp = globalGalaxias;
-
         while (temp->siguiente != nullptr)
             temp = temp->siguiente;
-
         temp->siguiente = nueva;
     }
 
     insertarVertice(nueva->id, nueva->name);
-
     cout << "\nGalaxia agregada correctamente." << endl;
 }
 
@@ -126,19 +116,16 @@ void editarGalaxia(string id) {
         cout << "\nGalaxia no encontrada." << endl;
         return;
     }
+    char buffer[100];
+    pedirCadena("Nuevo Nombre: ", buffer, 100);
 
-    cout << "Nuevo nombre: ";
-    getline(cin, galaxy->name);
+    galaxy->name = buffer;
 
-    cout << "Nueva coordenada X: ";
-    cin >> galaxy->x;
+    galaxy->x = pedirFloat("Coordenada X: ");
 
-    cout << "Nueva coordenada Y: ";
-    cin >> galaxy->y;
+    galaxy->y = pedirFloat("Coordenada Y: ");
 
-    cout << "Nueva coordenada Z: ";
-    cin >> galaxy->z;
-    cin.ignore();
+    galaxy->z = pedirFloat("Coordenada Z: ");
 
     cout << "\nGalaxia editada correctamente." << endl;
 }
@@ -154,13 +141,11 @@ void eliminarGalaxia(string id) {
     Galaxy* anterior = nullptr;
 
     while (actual != nullptr && actual->id != id) {
-
         anterior = actual;
         actual = actual->siguiente;
     }
 
     if (actual == nullptr) {
-
         cout << "\nGalaxia no encontrada." << endl;
         return;
     }
@@ -169,11 +154,9 @@ void eliminarGalaxia(string id) {
         globalGalaxias = actual->siguiente;
     else
         anterior->siguiente = actual->siguiente;
-
     eliminarVertice(id);
 
     delete actual;
-
     cout << "\nGalaxia eliminada correctamente." << endl;
 }
 
@@ -187,7 +170,7 @@ void* buscarGalaxyPorId(string id) {
 }
 
 /*
- *                                X-WINGS
+ *                                X-WINGS (Naves)
  */
 
 /**
@@ -230,6 +213,13 @@ void agregarNave() {
     pedirCadena("ID: ", buffer, 100);
     nueva->id = buffer;
 
+    //Verificar ID duplicado
+    if (findShipById(nueva->id) != nullptr) {
+        cout << "\nYa registrado." << endl;
+        delete nueva;
+        return;
+    }
+
     pedirCadena("Nombre: ", buffer, 100);
     nueva->name = buffer;
 
@@ -239,9 +229,11 @@ void agregarNave() {
     nueva->capacidad = pedirEntero("Capacidad: ");
     nueva->velocidadMax = pedirEntero("Velocidad maxima: ");
 
-    cout << "Activa (1 = Si, 0 = No): ";
-    cin >> nueva->activa;
-    cin.ignore();
+    int opcion;
+    do{
+        opcion=pedirEntero("Activa (1=Si,0=No): ");
+    }while(opcion!=0 && opcion!=1);
+    nueva->activa=(opcion==1);
 
     nueva->tripHistory = nullptr;
     nueva->siguiente = nullptr;
@@ -249,28 +241,20 @@ void agregarNave() {
     Ship* temp = globalShips;
 
     while (temp != nullptr) {
-
         if (temp->code == nueva->code) {
-
             cout << "\nYa existe una nave con ese codigo." << endl;
             delete nueva;
             return;
         }
-
         temp = temp->siguiente;
     }
 
     if (globalShips == nullptr) {
-
         globalShips = nueva;
-
     } else {
-
         temp = globalShips;
-
         while (temp->siguiente != nullptr)
             temp = temp->siguiente;
-
         temp->siguiente = nueva;
     }
 
@@ -287,16 +271,12 @@ void editarNave(string id) {
     Ship* ship = findShipById(id);
 
     if (ship == nullptr) {
-
         cout << "\nNave no encontrada." << endl;
         return;
     }
-
     char buffer[100];
-
     pedirCadena("Nuevo nombre: ", buffer, 100);
     ship->name = buffer;
-
     cout << "\nNave editada correctamente." << endl;
 }
 
@@ -311,21 +291,17 @@ void eliminarNave(string id) {
     Ship* anterior = nullptr;
 
     while (actual != nullptr && actual->id != id) {
-
         anterior = actual;
         actual = actual->siguiente;
     }
 
     if (actual == nullptr) {
-
         cout << "\nNave no encontrada." << endl;
         return;
     }
 
     if (actual->tripHistory != nullptr) {
-
         cout << "\nAdvertencia: la nave posee viajes registrados." << endl;
-
         if (!confirmarAccion("Desea eliminarla de todas formas?"))
             return;
     }
@@ -334,7 +310,6 @@ void eliminarNave(string id) {
         globalShips = actual->siguiente;
     else
         anterior->siguiente = actual->siguiente;
-
     delete actual;
 
     cout << "\nNave eliminada correctamente." << endl;
@@ -423,12 +398,22 @@ void agregarRuta() {
     pedirCadena("Tipo: ", buffer, 100);
     nueva->tipo = buffer;
 
-    cout << "Costo: ";
-    cin >> nueva->cost;
+    do {
+        nueva->cost = pedirEntero("Costo: ");
 
-    cout << "Tiempo en dias: ";
-    cin >> nueva->tiempoDias;
-    cin.ignore();
+        if(nueva->cost<=0)
+            cout<<"El costo debe ser mayor que cero."<<endl;
+
+    } while(nueva->cost<=0);
+    
+    do {
+        nueva->tiempoDias = pedirEntero("Tiempo en dias: ");
+
+        if (nueva->tiempoDias <= 0) {
+            cout << "El tiempo debe ser mayor que cero." << endl;
+        }
+
+    } while (nueva->tiempoDias <= 0);
 
     nueva->activa = confirmarAccion("La ruta esta activa?");
 
@@ -472,9 +457,13 @@ void editarRuta(string id) {
         return;
     }
 
-    cout << "Nuevo costo: ";
-    cin >> ruta->cost;
-    cin.ignore();
+    do {
+        ruta->cost = pedirEntero("Costo: ");
+
+        if(ruta->cost<=0)
+            cout<<"El costo debe ser mayor que cero."<<endl;
+
+    } while(ruta->cost<=0);
 
     actualizarCostoArco(
         ruta->originId,
@@ -532,9 +521,7 @@ void* buscarRutaPorId(string id) {
 }
 
 /*
- * ============================================================================
  *                                VIAJES
- * ============================================================================
  */
 
 /**
@@ -578,10 +565,18 @@ void registrarViaje() {
     pedirCadena("ID: ", buffer, 100);
     nuevo->id = buffer;
 
+    //Verificar ID duplicado
+    if (findTripById(nuevo->id) != nullptr) {
+        cout << "\nYa registrado." << endl;
+        delete nuevo;
+        return;
+    }
+
     pedirCadena("ID de la nave: ", buffer, 100);
     nuevo->shipId = buffer;
 
     Ship* nave = findShipById(nuevo->shipId);
+
 
     if (nave == nullptr) {
         cout << "\nLa nave no existe." << endl;
@@ -613,9 +608,13 @@ void registrarViaje() {
     pedirCadena("Fecha: ", buffer, 100);
     nuevo->date = buffer;
 
-    cout << "Costo: ";
-    cin >> nuevo->cost;
-    cin.ignore();
+    do {
+        nuevo->cost = pedirEntero("Costo: ");
+
+        if(nuevo->cost<=0)
+            cout<<"El costo debe ser mayor que cero."<<endl;
+
+    } while(nuevo->cost<=0);
 
     nuevo->exitoso = confirmarAccion("El viaje fue exitoso?");
 
@@ -625,8 +624,7 @@ void registrarViaje() {
 
     nuevo->siguiente = nullptr;
 
-    /* Agregar a la lista global */
-
+    /*Agregar a la lista global*/
     if (globalTrips == nullptr) {
 
         globalTrips = nuevo;
@@ -672,9 +670,13 @@ void editarViaje(string id) {
     pedirCadena("Nueva fecha: ", buffer, 100);
     viaje->date = buffer;
 
-    cout << "Nuevo costo: ";
-    cin >> viaje->cost;
-    cin.ignore();
+    do {
+        viaje->cost = pedirEntero("Costo: ");
+
+        if(viaje->cost<=0)
+            cout<<"El costo debe ser mayor que cero."<<endl;
+
+    } while(viaje->cost<=0);
 
     cout << "\nViaje editado correctamente." << endl;
 }
@@ -742,222 +744,7 @@ void* buscarViajePorId(string id) {
     return findTripById(id);
 }
 /*
- * ============================================================================
- *                                VIAJES
- * ============================================================================
- */
-
-/**
- * @brief Imprime todos los viajes almacenados en memoria.
- * @return void
- */
-void listarViajes() {
-
-    if (globalTrips == nullptr) {
-        cout << "\nNo hay viajes registrados." << endl;
-        return;
-    }
-
-    Trip* actual = globalTrips;
-
-    while (actual != nullptr) {
-
-        cout << "\n----------------------------------------" << endl;
-        cout << "ID: " << actual->id << endl;
-        cout << "Nave: " << actual->naveNombre << endl;
-        cout << "Ruta: " << actual->rutaId << endl;
-        cout << "Origen: " << actual->origenNombre << endl;
-        cout << "Destino: " << actual->destinoNombre << endl;
-        cout << "Fecha: " << actual->date << endl;
-        cout << "Costo: " << actual->cost << endl;
-        cout << "Exitoso: " << (actual->exitoso ? "Si" : "No") << endl;
-
-        actual = actual->siguiente;
-    }
-}
-
-/**
- * @brief Registra un viaje en memoria.
- * @return void
- */
-void registrarViaje() {
-
-    Trip* nuevo = new Trip();
-    char buffer[100];
-
-    pedirCadena("ID: ", buffer, 100);
-    nuevo->id = buffer;
-
-    pedirCadena("ID de la nave: ", buffer, 100);
-    nuevo->shipId = buffer;
-
-    Ship* nave = findShipById(nuevo->shipId);
-
-    if (nave == nullptr) {
-        cout << "\nLa nave no existe." << endl;
-        delete nuevo;
-        return;
-    }
-
-    pedirCadena("ID de la ruta: ", buffer, 100);
-    nuevo->rutaId = buffer;
-
-    Edge* ruta = findEdgeById(nuevo->rutaId);
-
-    if (ruta == nullptr) {
-        cout << "\nLa ruta no existe." << endl;
-        delete nuevo;
-        return;
-    }
-
-    Galaxy* origen = findGalaxyById(ruta->originId);
-    Galaxy* destino = findGalaxyById(ruta->destinationId);
-
-    if (origen == nullptr || destino == nullptr) {
-
-        cout << "\nLa ruta referencia galaxias inexistentes." << endl;
-        delete nuevo;
-        return;
-    }
-
-    pedirCadena("Fecha: ", buffer, 100);
-    nuevo->date = buffer;
-
-    cout << "Costo: ";
-    cin >> nuevo->cost;
-    cin.ignore();
-
-    nuevo->exitoso = confirmarAccion("El viaje fue exitoso?");
-
-    nuevo->naveNombre = nave->name;
-    nuevo->origenNombre = origen->name;
-    nuevo->destinoNombre = destino->name;
-
-    nuevo->siguiente = nullptr;
-
-    /* Agregar a la lista global */
-
-    if (globalTrips == nullptr) {
-
-        globalTrips = nuevo;
-
-    } else {
-
-        Trip* temp = globalTrips;
-
-        while (temp->siguiente != nullptr)
-            temp = temp->siguiente;
-
-        temp->siguiente = nuevo;
-    }
-
-    /* Agregar al historial de la nave */
-
-    if (nave->tripHistory == nullptr) {
-
-        nave->tripHistory = nuevo;
-
-    } else {
-
-        Trip* temp = nave->tripHistory;
-
-        while (temp->siguiente != nullptr)
-            temp = temp->siguiente;
-
-        temp->siguiente = nuevo;
-    }
-
-    cout << "\nViaje registrado correctamente." << endl;
-}
-
-/**
- * @brief Edita la fecha y costo de un viaje.
- * @param id identificador del viaje.
- * @return void
- */
-void editarViaje(string id) {
-
-    Trip* viaje = findTripById(id);
-
-    if (viaje == nullptr) {
-
-        cout << "\nViaje no encontrado." << endl;
-        return;
-    }
-
-    char buffer[100];
-
-    pedirCadena("Nueva fecha: ", buffer, 100);
-    viaje->date = buffer;
-
-    cout << "Nuevo costo: ";
-    cin >> viaje->cost;
-    cin.ignore();
-
-    cout << "\nViaje editado correctamente." << endl;
-}
-
-/**
- * @brief Elimina un viaje de memoria y del historial de la nave.
- * @param id identificador del viaje.
- * @return void
- */
-void eliminarViaje(string id) {
-
-    Trip* actual = globalTrips;
-    Trip* anterior = nullptr;
-
-    while (actual != nullptr && actual->id != id) {
-
-        anterior = actual;
-        actual = actual->siguiente;
-    }
-
-    if (actual == nullptr) {
-
-        cout << "\nViaje no encontrado." << endl;
-        return;
-    }
-
-    /* Actualizar referencia del historial de la nave */
-
-    Ship* nave = findShipById(actual->shipId);
-
-    if (nave != nullptr && nave->tripHistory == actual) {
-
-        Trip* siguienteViaje = actual->siguiente;
-
-        while (siguienteViaje != nullptr &&
-            siguienteViaje->shipId != nave->id) {
-
-            siguienteViaje = siguienteViaje->siguiente;
-        }
-
-        nave->tripHistory = siguienteViaje;
-    }
-
-    if (anterior == nullptr)
-        globalTrips = actual->siguiente;
-    else
-        anterior->siguiente = actual->siguiente;
-
-    delete actual;
-
-    cout << "\nViaje eliminado correctamente." << endl;
-}
-
-/**
- * @brief Busca un viaje por id.
- * @param id identificador.
- * @return puntero a Trip o nullptr.
- */
-void* buscarViajePorId(string id) {
-    return findTripById(id);
-}
-/*
- * ============================================================================
  *                        CONFIGURACIONES CRUD
- * ============================================================================
  */
 
 /**
