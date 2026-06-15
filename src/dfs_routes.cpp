@@ -65,7 +65,11 @@ void dfsTodasLasRutas(Vertice* origen, string ruta, float costo, float* count) {
 void mostrarTodasLasRutas(string galaxyId) {
     Vertice* origen = buscarVertice(galaxyId);
     if (origen == nullptr) {
-        cout << "Galaxia origen no encontrada." << endl;
+        cout << "No encontrado." << endl;
+        return;
+    }
+    if (origen->subListaArcos == nullptr) {
+        cout << "Sin conexiones." << endl;
         return;
     }
     desmarcarVertices();

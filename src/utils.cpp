@@ -50,6 +50,29 @@ void pedirCadena(const char* mensaje, char* result, int maxLen) {
 }
 
 /**
+ * @brief  Lee un numero decimal de cin, repite hasta que se ingrese un valor valido
+ * @param  mensaje  prompt a mostrar al usuario
+ * @return numero decimal valido ingresado por el usuario
+ */
+float pedirFloat(const char* mensaje) {
+    float valor;
+
+    while (true) {
+        cout << mensaje;
+        cin >> valor;
+
+        if (cin.good()) {
+            cin.ignore(1000, '\n');
+            return valor;
+        }
+
+        cin.clear();
+        cin.ignore(1000, '\n');
+        cout << "Entrada invalida. Ingrese un numero." << endl;
+    }
+}
+
+/**
  * @brief  Muestra pregunta de si/no al usuario
  * @param  mensaje  pregunta a mostrar
  * @return true si el usuario ingresa s o S, false en caso contrario
@@ -130,49 +153,3 @@ Trip* findTripById(string id) {
     return nullptr;
 }
 
-/**
- * @brief  Libera toda la memoria dinámica de las listas globales y del grafo
- *         Debe llamarse justo antes de salir del programa
- * @return void
- */
-void freeAll() {
-    // Liberar galaxias
-    while (globalGalaxias != nullptr) {
-        Galaxy* tmp = globalGalaxias;
-        globalGalaxias = globalGalaxias->siguiente;
-        delete tmp;
-    }
-    // Liberar naves (los viajes ya están en la lista global de trips)
-    while (globalShips != nullptr) {
-        Ship* tmp = globalShips;
-        globalShips = globalShips->siguiente;
-        delete tmp;
-    }
-    // Liberar rutas (edges)
-    while (globalEdges != nullptr) {
-        Edge* tmp = globalEdges;
-        globalEdges = globalEdges->siguiente;
-        delete tmp;
-    }
-    // Liberar viajes
-    while (globalTrips != nullptr) {
-        Trip* tmp = globalTrips;
-        globalTrips = globalTrips->siguiente;
-        delete tmp;
-    }
-    // Liberar grafo (vértices y arcos)
-    extern Vertice* grafo;
-    Vertice* v = grafo;
-    while (v != nullptr) {
-        Arco* a = v->subListaArcos;
-        while (a != nullptr) {
-            Arco* sig = a->sigA;
-            delete a;
-            a = sig;
-        }
-        Vertice* sigV = v->sigV;
-        delete v;
-        v = sigV;
-    }
-    grafo = nullptr;
-}

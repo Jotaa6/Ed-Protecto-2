@@ -43,6 +43,13 @@ int pedirEntero(const char* mensaje);
 void pedirCadena(const char* mensaje, char* result, int maxLen);
 
 /**
+ * @brief  Lee un numero decimal de cin, repite hasta que se ingrese un valor valido
+ * @param  mensaje  prompt a mostrar al usuario
+ * @return numero decimal valido ingresado por el usuario
+ */
+float pedirFloat(const char* mensaje);
+
+/**
  * @brief  Muestra pregunta de si/no al usuario
  * @param  mensaje  pregunta a mostrar
  * @return true si el usuario ingresa s o S, false en caso contrario
