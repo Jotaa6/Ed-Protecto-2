@@ -3,7 +3,7 @@
  * Descripcion: Funciones utilitarias compartidas entre todos los modulos
  * Estructuras: ninguna propia
  * Funciones: pedirEntero, pedirCadena, confirmarAccion, getCurrentTimestamp,
- *            findGalaxyById, findShipById, findEdgeById, findTripById
+ *            findGalaxyById, findShipById, findEdgeById, findTripById, freeAll
  * Creado: 2026
  * Ultima modificacion: 2026
  * Autores: <integrantes>
@@ -85,5 +85,12 @@ Edge* findEdgeById(string id);
  * @return puntero a Trip si se encuentra, nullptr si no
  */
 Trip* findTripById(string id);
+
+/**
+ * @brief  Libera toda la memoria dinámica de las listas globales y del grafo
+ *         Debe llamarse justo antes de salir del programa
+ * @return void
+ */
+void freeAll();
 
 #endif

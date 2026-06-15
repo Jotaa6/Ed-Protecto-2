@@ -3,12 +3,13 @@
  * Descripcion: Implementacion de funciones utilitarias compartidas
  * Estructuras: ninguna propia
  * Funciones: pedirEntero, pedirCadena, confirmarAccion, getCurrentTimestamp,
- *            findGalaxyById, findShipById, findEdgeById, findTripById
+ *            findGalaxyById, findShipById, findEdgeById, findTripById, freeAll
  * Creado: 2026
  * Ultima modificacion: 2026
  * Autores: <integrantes>
  */
 #include "../include/utils.h"
+#include "../include/graph.h"   // para acceder a grafo, Vertice, Arco
 
 Galaxy* globalGalaxias = nullptr;
 Ship*   globalShips    = nullptr;
@@ -127,4 +128,51 @@ Trip* findTripById(string id) {
         temp = temp->siguiente;
     }
     return nullptr;
+}
+
+/**
+ * @brief  Libera toda la memoria dinámica de las listas globales y del grafo
+ *         Debe llamarse justo antes de salir del programa
+ * @return void
+ */
+void freeAll() {
+    // Liberar galaxias
+    while (globalGalaxias != nullptr) {
+        Galaxy* tmp = globalGalaxias;
+        globalGalaxias = globalGalaxias->siguiente;
+        delete tmp;
+    }
+    // Liberar naves (los viajes ya están en la lista global de trips)
+    while (globalShips != nullptr) {
+        Ship* tmp = globalShips;
+        globalShips = globalShips->siguiente;
+        delete tmp;
+    }
+    // Liberar rutas (edges)
+    while (globalEdges != nullptr) {
+        Edge* tmp = globalEdges;
+        globalEdges = globalEdges->siguiente;
+        delete tmp;
+    }
+    // Liberar viajes
+    while (globalTrips != nullptr) {
+        Trip* tmp = globalTrips;
+        globalTrips = globalTrips->siguiente;
+        delete tmp;
+    }
+    // Liberar grafo (vértices y arcos)
+    extern Vertice* grafo;
+    Vertice* v = grafo;
+    while (v != nullptr) {
+        Arco* a = v->subListaArcos;
+        while (a != nullptr) {
+            Arco* sig = a->sigA;
+            delete a;
+            a = sig;
+        }
+        Vertice* sigV = v->sigV;
+        delete v;
+        v = sigV;
+    }
+    grafo = nullptr;
 }
