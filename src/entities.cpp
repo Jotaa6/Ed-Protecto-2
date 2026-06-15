@@ -232,6 +232,7 @@ void agregarNave() {
     int opcion;
     do{
         opcion=pedirEntero("Activa (1=Si,0=No): ");
+        cout << "Valor inválido. Ingrese 1 para Sí o 0 para No." << endl;
     }while(opcion!=0 && opcion!=1);
     nueva->activa=(opcion==1);
 
