@@ -87,3 +87,10 @@ Edge* findEdgeById(string id);
 Trip* findTripById(string id);
 
 #endif
+
+/**
+ * @brief  Reproduce un archivo WAV usando la API de Windows (PlaySound)
+ * @param  filename  nombre del archivo .wav (ej. "Guardianes.wav")
+ * @return void
+ */
+void playAudio(const char* filename);

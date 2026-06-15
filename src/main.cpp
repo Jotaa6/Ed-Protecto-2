@@ -6,13 +6,17 @@
  */
 #include <iostream>
 #include <direct.h>
+nclude/menu.h"/a #include "../include/utils.h"
 #include "../include/data_loader.h"
+nclude/menu.h"/a #include "../include/utils.h"
 #include "../include/graph.h"
+nclude/menu.h"/a #include "../include/utils.h"
 #include "../include/kruskal.h"
 using namespace std;
 
 int main() {
     _mkdir("output");
+    playAudio("Guardianes.wav");
     try {
         loadAll();
         cout << "\n=== Verificacion del grafo ===" << endl;

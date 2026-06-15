@@ -128,3 +128,15 @@ Trip* findTripById(string id) {
     }
     return nullptr;
 }
+
+#include <windows.h>
+#include <mmsystem.h>
+
+/**
+ * @brief  Reproduce un archivo WAV de forma asíncrona (no bloquea el programa)
+ * @param  filename  nombre del archivo .wav
+ * @return void
+ */
+void playAudio(const char* filename) {
+    PlaySound(TEXT(filename), NULL, SND_FILENAME | SND_ASYNC);
+}
