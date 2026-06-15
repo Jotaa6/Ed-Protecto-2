@@ -2,8 +2,9 @@
  * Archivo: utils.h
  * Descripcion: Funciones utilitarias compartidas entre todos los modulos
  * Estructuras: ninguna propia
- * Funciones: pedirEntero, pedirCadena, confirmarAccion, getCurrentTimestamp,
- *            findGalaxyById, findShipById, findEdgeById, findTripById, freeAll
+ * Funciones: pedirEntero, pedirCadena, pedirFloat, confirmarAccion,
+ *            getCurrentTimestamp, findGalaxyById, findShipById,
+ *            findEdgeById, findTripById, playAudio, freeAll
  * Creado: 2026
  * Ultima modificacion: 2026
  * Autores: <integrantes>
@@ -14,10 +15,12 @@
 #include <iostream>
 #include <cstring>
 #include <ctime>
+#include <string>
 #include "galaxy.h"
 #include "ship.h"
 #include "edge.h"
 #include "trip.h"
+
 using namespace std;
 
 // Listas globales de entidades
@@ -92,6 +95,13 @@ Edge* findEdgeById(string id);
  * @return puntero a Trip si se encuentra, nullptr si no
  */
 Trip* findTripById(string id);
+
+/**
+ * @brief  Reproduce un archivo WAV de forma asíncrona usando PlaySound
+ * @param  filename  nombre del archivo .wav (ej. "Guardianes.wav")
+ * @return void
+ */
+void playAudio(const char* filename);
 
 /**
  * @brief  Libera toda la memoria dinámica de las listas globales y del grafo
