@@ -49,6 +49,29 @@ void pedirCadena(const char* mensaje, char* result, int maxLen) {
 }
 
 /**
+ * @brief  Lee un numero decimal de cin, repite hasta que se ingrese un valor valido
+ * @param  mensaje  prompt a mostrar al usuario
+ * @return numero decimal valido ingresado por el usuario
+ */
+float pedirFloat(const char* mensaje) {
+    float valor;
+
+    while (true) {
+        cout << mensaje;
+        cin >> valor;
+
+        if (cin.good()) {
+            cin.ignore(1000, '\n');
+            return valor;
+        }
+
+        cin.clear();
+        cin.ignore(1000, '\n');
+        cout << "Entrada invalida. Ingrese un numero." << endl;
+    }
+}
+
+/**
  * @brief  Muestra pregunta de si/no al usuario
  * @param  mensaje  pregunta a mostrar
  * @return true si el usuario ingresa s o S, false en caso contrario
@@ -128,3 +151,4 @@ Trip* findTripById(string id) {
     }
     return nullptr;
 }
+
