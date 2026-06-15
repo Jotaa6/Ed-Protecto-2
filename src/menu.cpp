@@ -205,7 +205,7 @@ void showMainMenu() {
 
     do {
         cout << "\n===================================" << endl;
-        cout << "      SISTEMA DE GALAXIAS" << endl;
+        cout << "      Guardianes de la Galaxia       " << endl;
         cout << "===================================" << endl;
         cout << "1. Galaxias" << endl;
         cout << "2. Rutas" << endl;
