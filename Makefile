@@ -5,7 +5,7 @@
 
 CXX      = C:/msys64/mingw64/bin/g++
 CXXFLAGS = -std=c++17 -Wall -I include -I "C:/msys64/mingw64/include" -DWIN32_LEAN_AND_MEAN -DCURL_STATICLIB
-LIBS     = -L "C:/msys64/mingw64/lib" -lcurl -lws2_32 -lwldap32 -lssl -lcrypto -lzstd -lbrotlidec -lbrotlicommon
+LIBS     = -L "C:/msys64/mingw64/lib" -lcurl -lws2_32 -lwldap32 -lssl -lcrypto -lzstd -lbrotlidec -lbrotlicommon -lwinmm
 SRC_DIR  = src
 BUILD_DIR = build
 TARGET   = galaxias.exe
