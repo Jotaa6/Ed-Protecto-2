@@ -83,6 +83,12 @@ void queryRutaMenorCosto(int origenId, int destinoId) {
         return;
     }
     DijkstraResult* ultimo = getUltimoResultado();
+
+    if (ultimo == nullptr) {
+        cout << "No se pudo recuperar la informacion de la ruta." << endl;
+        return;
+    }
+
     cout << "Ruta encontrada:" << endl;
     imprimirRutaDijkstra(ultimo);
 }
@@ -142,8 +148,13 @@ void queryHistorialNave(int shipId) {
         return;
     }
     string id = construirIdNave(shipId);
+
     Ship* nave = findShipById(id);
-    cout << "Nave: " << nave->name << " (" << nave->id << ")" << endl;
+    if (nave == nullptr) {
+        cout << "No se encontro la nave." << endl;
+        return;
+    }
+    cout << "Nave: " << nave->name<< " (" << nave->id << ")" << endl;
     Trip* viaje = nave->tripHistory;
     if (viaje == nullptr) {
         cout << "La nave no tiene viajes registrados." << endl;

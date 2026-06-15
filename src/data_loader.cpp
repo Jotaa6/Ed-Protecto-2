@@ -95,12 +95,19 @@ void loadAll() {
             float** matrix = nullptr;
             int size = 0;
             parseAdyacencia(json, matrix, size);
-            if (matrix != nullptr && size > 0) {
-                cargarMatrizAdyacencia(matrix, size);
-                for (int i = 0; i < size; i++) delete[] matrix[i];
-                delete[] matrix;
-                cout << "   Matriz " << size << "x" << size << " cargada." << endl;
+
+        if (matrix != nullptr && size > 0) {
+
+            cargarMatrizAdyacencia(matrix, size);
+
+            for (int i = 0; i < size; i++) {
+                if (matrix[i] != nullptr)
+                    delete[] matrix[i];
             }
+
+            delete[] matrix;
+        }
+
         } else {
             cout << "   Advertencia: no se pudo cargar matriz." << endl;
         }
@@ -136,7 +143,12 @@ void loadAll() {
             while (t != nullptr) {
                 Ship* s = findShipById(t->shipId);
                 if (s != nullptr) {
-                    Trip* copia          = new Trip();
+                    Trip* copia = new Trip();
+                    if (copia == nullptr) {
+                        cout << "No se pudo reservar memoria para un viaje." << endl;
+                        t = t->siguiente;
+                        continue;
+                    }
                     copia->id            = t->id;
                     copia->shipId        = t->shipId;
                     copia->rutaId        = t->rutaId;
