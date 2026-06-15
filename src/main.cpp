@@ -3,12 +3,14 @@
  * Descripcion: Punto de entrada del sistema
  *              Inicializa la carga de datos y muestra el menu principal
  * Creado: 2026
- * Autores: <José Pablo Barrantes
+ * Autores: José Pablo Barrantes
  */
 #include <iostream>
 #include <direct.h>
 #include "../include/data_loader.h"
 #include "../include/menu.h"
+#include "../include/utils.h"
+
 using namespace std;
 
 /**
@@ -19,6 +21,9 @@ using namespace std;
  */
 int main() {
     _mkdir("output");
+
+    // Reproducir audio si el archivo Guardianes.wav existe
+    playAudio("Guardianes.wav");
 
     try {
         loadAll();
@@ -32,6 +37,9 @@ int main() {
         cout << "Error inesperado. El programa se cerrara." << endl;
         return 1;
     }
+
+    // Liberar memoria dinámica antes de salir
+    freeAll();
 
     return 0;
 }
