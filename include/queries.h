@@ -71,4 +71,9 @@ void queryArbolKruskal();
  */
 void queryHistorialNave(string shipId);
 
+void queryTodasLasRutas(string galaxyId);
+
+void queryRutaMenorCosto(string origenId, string destinoId);
+
+void queryHistorialNave(string shipId);
 #endif

@@ -177,3 +177,76 @@ void queryHistorialNave(int shipId) {
         viaje = viaje->siguiente;
     }
 }
+// ==================== Funciones faltantes con string IDs ====================
+
+/**
+ * @brief  Consulta 1 — todas las rutas desde una galaxia (versión string)
+ * @param galaxyId ID de la galaxia como string
+ */
+void queryTodasLasRutas(string galaxyId) {
+    cout << "\n=== CONSULTA 1: TODAS LAS RUTAS POSIBLES ===" << endl;
+    if (buscarVertice(galaxyId) == nullptr) {
+        cout << "Galaxia no encontrada." << endl;
+        return;
+    }
+    mostrarTodasLasRutas(galaxyId);
+}
+
+/**
+ * @brief  Consulta 2 — ruta de menor costo entre dos galaxias (versión string)
+ * @param origenId  ID origen
+ * @param destinoId ID destino
+ */
+void queryRutaMenorCosto(string origenId, string destinoId) {
+    cout << "\n=== CONSULTA 2: RUTA DE MENOR COSTO ===" << endl;
+    if (buscarVertice(origenId) == nullptr) {
+        cout << "Galaxia origen no encontrada." << endl;
+        return;
+    }
+    if (buscarVertice(destinoId) == nullptr) {
+        cout << "Galaxia destino no encontrada." << endl;
+        return;
+    }
+    float costo = dijkstra(origenId, destinoId);
+    if (costo == -1) {
+        cout << "No existe una ruta entre las galaxias indicadas." << endl;
+        return;
+    }
+    DijkstraResult* ultimo = getUltimoResultado();
+    if (ultimo == nullptr) {
+        cout << "No se pudo recuperar la ruta." << endl;
+        return;
+    }
+    cout << "Ruta encontrada:" << endl;
+    imprimirRutaDijkstra(ultimo);
+}
+
+/**
+ * @brief  Consulta 4 — historial de viajes de una nave (versión string)
+ * @param shipId ID de la nave
+ */
+void queryHistorialNave(string shipId) {
+    cout << "\n=== CONSULTA 4: HISTORIAL DE VIAJES DE NAVE ===" << endl;
+    Ship* nave = findShipById(shipId);
+    if (nave == nullptr) {
+        cout << "Nave no encontrada." << endl;
+        return;
+    }
+    cout << "Nave: " << nave->name << " (" << nave->id << ")" << endl;
+    Trip* viaje = nave->tripHistory;
+    if (viaje == nullptr) {
+        cout << "La nave no tiene viajes registrados." << endl;
+        return;
+    }
+    int contador = 0;
+    while (viaje != nullptr) {
+        contador++;
+        cout << contador << ". ";
+        cout << "Viaje: " << viaje->id << " | ";
+        cout << "Ruta: " << viaje->origenNombre << " -> " << viaje->destinoNombre << " | ";
+        cout << "Fecha: " << viaje->date << " | ";
+        cout << "Costo: " << viaje->cost << " | ";
+        cout << (viaje->exitoso ? "Exitoso" : "Fallido") << endl;
+        viaje = viaje->siguiente;
+    }
+}
