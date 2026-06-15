@@ -3,12 +3,13 @@
  * Descripcion: Implementacion de funciones utilitarias compartidas
  * Estructuras: ninguna propia
  * Funciones: pedirEntero, pedirCadena, confirmarAccion, getCurrentTimestamp,
- *            findGalaxyById, findShipById, findEdgeById, findTripById
+ *            findGalaxyById, findShipById, findEdgeById, findTripById, freeAll
  * Creado: 2026
  * Ultima modificacion: 2026
  * Autores: <integrantes>
  */
 #include "../include/utils.h"
+#include "../include/graph.h"   // para acceder a grafo, Vertice, Arco
 
 Galaxy* globalGalaxias = nullptr;
 Ship*   globalShips    = nullptr;
