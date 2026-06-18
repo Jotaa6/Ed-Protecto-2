@@ -5,7 +5,7 @@
  * Funciones: httpGet, writeCallback
  * Creado: 2026
  * Ultima modificacion: 2026
- * Autores: <integrantes>
+ * Autores: <Jorge Ulate>
  */
 #ifndef API_CLIENT_H
 #define API_CLIENT_H
