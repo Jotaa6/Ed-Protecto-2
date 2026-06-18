@@ -96,7 +96,6 @@ void runCrud(CrudConfig config) {
                 try {
                     if (config.edit != nullptr) {
                         string id = promptAndValidateId(config);
-
                         if (id != "") {
                             config.edit(id);
                         }
@@ -112,7 +111,6 @@ void runCrud(CrudConfig config) {
                 try {
                     if (config.remove != nullptr) {
                         string id = promptAndValidateId(config);
-
                         if (id != "") {
                             config.remove(id);
                         }
@@ -123,11 +121,20 @@ void runCrud(CrudConfig config) {
                     cout << "Ocurrio un error al eliminar." << endl;
                 }
                 break;
+
             case 5:
                 try {
                     string id = promptAndValidateId(config);
                     if (id != "") {
-                        cout << config.entityName << " encontrado correctamente." << endl;
+                        void* item = config.findById(id);
+                        if (item != nullptr) {
+                            cout << config.entityName << " encontrado:" << endl;
+                            if (config.printDetail != nullptr) {
+                                config.printDetail(item);
+                            } else {
+                                cout << "(No hay funcion de detalle para esta entidad.)" << endl;
+                            }
+                        }
                     }
                 } catch (...) {
                     cout << "Ocurrio un error al buscar." << endl;
