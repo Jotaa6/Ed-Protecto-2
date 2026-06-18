@@ -153,7 +153,6 @@ Trip* findTripById(string id) {
     return nullptr;
 }
 
-// ==================== Funciones de audio y liberación ====================
 
 /**
  * @brief  Reproduce un archivo WAV de forma asíncrona usando PlaySound
