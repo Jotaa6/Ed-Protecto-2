@@ -5,7 +5,7 @@
  * Funciones: httpGet, writeCallback
  * Creado: 2026
  * Ultima modificacion: 2026
- * Autores: <integrantes>
+ * Autores: <Jorge Ulate>
  */
 #include "../include/api_client.h"
 
