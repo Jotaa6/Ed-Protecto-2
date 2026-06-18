@@ -177,7 +177,6 @@ void queryHistorialNave(int shipId) {
         viaje = viaje->siguiente;
     }
 }
-// ==================== Funciones faltantes con string IDs ====================
 
 /**
  * @brief  Consulta 1 — todas las rutas desde una galaxia (versión string)
