@@ -10,7 +10,7 @@
  *            parseHistorialNave, parseGrafo, parseKruskal, parseAdyacencia
  * Creado: 2026
  * Ultima modificacion: 2026
- * Autores: <integrantes>
+ * Autores: <Jorge Ulate>
  */
 #ifndef JSON_PARSER_H
 #define JSON_PARSER_H
@@ -24,7 +24,7 @@
 #include "trip.h"
 using namespace std;
 
-// ── Capa 1 — extractores crudos ───────────────────────────────────────────
+
 
 /**
  * @brief  Extrae valor string para una clave en un objeto JSON plano
@@ -94,7 +94,7 @@ void extractObject(const char* json, const char* key,
 void extractNestedArray(const char* json, const char* key,
                         char* result, int maxLen);
 
-// ── Capa 2 — un parser por struct ─────────────────────────────────────────
+
 
 /**
  * @brief  Parsea un objeto JSON en Galaxy
@@ -124,7 +124,6 @@ Ship* parseNave(const char* jsonObject);
  */
 Trip* parseViaje(const char* jsonObject);
 
-// ── Capa 3 — una funcion por endpoint ─────────────────────────────────────
 
 /**
  * @brief  Parsea GET /galaxias en lista enlazada de Galaxy
