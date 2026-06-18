@@ -18,7 +18,7 @@ using namespace std;
 
 /**
  * @brief  Encuentra e imprime recursivamente todos los caminos desde origen
- *         Usa DFS con backtracking
+ *         Usa DFS
  *         Marca visitado=true, recorre arcos, recursa, luego pone visitado=false
  * @param  origen  vertice actual siendo visitado
  * @param  ruta    string acumulando el camino actual para mostrar
