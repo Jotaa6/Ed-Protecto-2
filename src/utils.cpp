@@ -7,7 +7,7 @@
  *            findEdgeById, findTripById, playAudio, freeAll
  * Creado: 2026
  * Ultima modificacion: 2026
- * Autores: <integrantes>
+ * Autores: <Jorge Ulate>
  */
 #include "../include/utils.h"
 #include "../include/graph.h"   // para acceder a grafo, Vertice, Arco
