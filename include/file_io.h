@@ -6,7 +6,7 @@
  *            escribirSeparador, cerrarArchivo
  * Creado: 2026
  * Ultima modificacion: 2026
- * Autores: <integrantes>
+ * Autores: <Jorge Ulate>
  */
 #ifndef FILE_IO_H
 #define FILE_IO_H

@@ -5,7 +5,7 @@
  * Funciones: initUnionFind, findRoot, unite, connected
  * Creado: 2026
  * Ultima modificacion: 2026
- * Autores: <integrantes>
+ * Autores: <Jorge Ulate>
  */
 #include "../include/union_find.h"
 

@@ -10,23 +10,18 @@
 #include "../include/crud.h"
 
 /**
- * @brief  Solicita y valida un id de forma generica
+ * @brief  Solicita un id al usuario y valida que exista en la lista de la entidad
  * @param  config  CrudConfig de la entidad siendo buscada
  * @return id ingresado por el usuario, o "" si no se encuentra
  */
 string promptAndValidateId(CrudConfig config) {
-    string id;
-
-    cout << "Ingrese el ID de " << config.entityName << ": ";
-    cin >> id;
-
-    if (id == "") {
-        cout << "ID invalido." << endl;
-        return "";
-    }
+    char buf[100];
+    pedirCadena("Ingrese el ID: ", buf, 100);
+    string id = string(buf);
 
     if (config.findById == nullptr) {
-        cout << "No existe funcion de busqueda para " << config.entityName << "." << endl;
+        cout << "No existe funcion de busqueda para "
+             << config.entityName << "." << endl;
         return "";
     }
 
@@ -56,25 +51,15 @@ void runCrud(CrudConfig config) {
         cout << "4. Eliminar" << endl;
         cout << "5. Buscar por ID" << endl;
         cout << "0. Volver" << endl;
-        cout << "Seleccione una opcion: ";
-        cin >> opcion;
-
-        if (cin.fail()) {
-            cin.clear();
-            cin.ignore(1000, '\n');
-            cout << "Opcion invalida." << endl;
-            opcion = -1;
-            continue;
-        }
+        opcion = pedirEntero("Seleccione una opcion: ");
 
         switch (opcion) {
             case 1:
                 try {
-                    if (config.listAll != nullptr) {
+                    if (config.listAll != nullptr)
                         config.listAll();
-                    } else {
+                    else
                         cout << "Funcion listar no disponible." << endl;
-                    }
                 } catch (...) {
                     cout << "Ocurrio un error al listar." << endl;
                 }
@@ -82,11 +67,10 @@ void runCrud(CrudConfig config) {
 
             case 2:
                 try {
-                    if (config.add != nullptr) {
+                    if (config.add != nullptr)
                         config.add();
-                    } else {
+                    else
                         cout << "Funcion agregar no disponible." << endl;
-                    }
                 } catch (...) {
                     cout << "Ocurrio un error al agregar." << endl;
                 }
@@ -96,9 +80,7 @@ void runCrud(CrudConfig config) {
                 try {
                     if (config.edit != nullptr) {
                         string id = promptAndValidateId(config);
-                        if (id != "") {
-                            config.edit(id);
-                        }
+                        if (id != "") config.edit(id);
                     } else {
                         cout << "Funcion editar no disponible." << endl;
                     }
@@ -111,9 +93,7 @@ void runCrud(CrudConfig config) {
                 try {
                     if (config.remove != nullptr) {
                         string id = promptAndValidateId(config);
-                        if (id != "") {
-                            config.remove(id);
-                        }
+                        if (id != "") config.remove(id);
                     } else {
                         cout << "Funcion eliminar no disponible." << endl;
                     }
@@ -125,17 +105,9 @@ void runCrud(CrudConfig config) {
             case 5:
                 try {
                     string id = promptAndValidateId(config);
-                    if (id != "") {
-                        void* item = config.findById(id);
-                        if (item != nullptr) {
-                            cout << config.entityName << " encontrado:" << endl;
-                            if (config.printDetail != nullptr) {
-                                config.printDetail(item);
-                            } else {
-                                cout << "(No hay funcion de detalle para esta entidad.)" << endl;
-                            }
-                        }
-                    }
+                    if (id != "")
+                        cout << config.entityName
+                             << " encontrado correctamente." << endl;
                 } catch (...) {
                     cout << "Ocurrio un error al buscar." << endl;
                 }

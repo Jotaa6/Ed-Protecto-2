@@ -9,7 +9,7 @@
  *            registrarViaje, editarViaje, eliminarViaje, buscarViajePorId
  * Creado: 2026
  * Ultima modificacion: 2026
- * Autores: <integrantes>
+ * Autores: <Jorge Ulate>
  */
 #ifndef ENTITIES_H
 #define ENTITIES_H

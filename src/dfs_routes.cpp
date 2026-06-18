@@ -12,7 +12,7 @@
 
 /**
  * @brief  Encuentra e imprime recursivamente todos los caminos desde origen
- *         Usa DFS con backtracking
+ *         Usa DFS
  *         Marca visitado=true, recorre arcos, recursa, luego pone visitado=false
  * @param  origen  vertice actual siendo visitado
  * @param  ruta    string acumulando el camino actual para mostrar
@@ -65,7 +65,11 @@ void dfsTodasLasRutas(Vertice* origen, string ruta, float costo, float* count) {
 void mostrarTodasLasRutas(string galaxyId) {
     Vertice* origen = buscarVertice(galaxyId);
     if (origen == nullptr) {
-        cout << "Galaxia origen no encontrada." << endl;
+        cout << "No encontrado." << endl;
+        return;
+    }
+    if (origen->subListaArcos == nullptr) {
+        cout << "Sin conexiones." << endl;
         return;
     }
     desmarcarVertices();

@@ -31,21 +31,21 @@ using namespace std;
  * @param  entityName  nombre para mostrar en mensaje de error
  * @return true si existe, false si no se encuentra
  */
-bool validarGalaxia(int galaxyId, const char* entityName);
+bool validarGalaxia(string galaxyId, const char* entityName);
 
 /**
  * @brief  Valida que un id de nave existe en la lista global de naves
  * @param  shipId  id numerico a validar
  * @return true si existe, false si no se encuentra
  */
-bool validarNave(int shipId);
+bool validarNave(string shipId);
 
 /**
  * @brief  Consulta 1 — muestra todas las rutas posibles desde una galaxia usando DFS
  * @param  galaxyId  id numerico de la galaxia origen
  * @return void
  */
-void queryTodasLasRutas(int galaxyId);
+void queryTodasLasRutas(string galaxyId);
 
 /**
  * @brief  Consulta 2 — muestra la ruta de menor costo entre dos galaxias
@@ -54,7 +54,7 @@ void queryTodasLasRutas(int galaxyId);
  * @param  destinoId  id numerico de la galaxia destino
  * @return void
  */
-void queryRutaMenorCosto(int origenId, int destinoId);
+void queryRutaMenorCosto(string origenId, string destinoId);
 
 /**
  * @brief  Consulta 3 — muestra el MST de Kruskal en terminal
@@ -69,6 +69,11 @@ void queryArbolKruskal();
  * @param  shipId  id numerico de la nave a consultar
  * @return void
  */
-void queryHistorialNave(int shipId);
+void queryHistorialNave(string shipId);
 
+void queryTodasLasRutas(string galaxyId);
+
+void queryRutaMenorCosto(string origenId, string destinoId);
+
+void queryHistorialNave(string shipId);
 #endif

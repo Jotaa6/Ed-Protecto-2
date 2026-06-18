@@ -7,7 +7,7 @@
  *            showReportesSubmenu
  * Creado: 2026
  * Ultima modificacion: 2026
- * Autores: <integrantes>
+ * Autores: <Jorge Ulate>
  */
 #ifndef MENU_H
 #define MENU_H

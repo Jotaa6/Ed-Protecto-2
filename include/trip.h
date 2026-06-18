@@ -5,7 +5,7 @@
  * Funciones: ninguna propia
  * Creado: 2026
  * Ultima modificacion: 2026
- * Autores: <integrantes>
+ * Autores: <Jorge Ulate>
  */
 #ifndef TRIP_H
 #define TRIP_H

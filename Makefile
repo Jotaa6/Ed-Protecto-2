@@ -1,8 +1,12 @@
-CXX = C:/msys64/mingw64/bin/g++++
-CXXFLAGS = -std=c++17 -Wall -I include -I "C:/msys64/mingw64/include" -DWIN32_LEAN_AND_MEAN -DCURL_STATICLIB
-LDFLAGS = -lwinmm -L "C:/msys64/mingw64/lib" -lcurl -lws2_32 -lwldap32 -lssl -lcrypto -lzstd -lbrotlidec -lbrotlicommon
+# Archivo: Makefile
+# Descripcion: Compilacion del proyecto para Windows con MinGW y MSYS2
+# Creado: 2026
+# Autores: <integrantes>
 
-SRC_DIR = src
+CXX      = C:/msys64/mingw64/bin/g++
+CXXFLAGS = -std=c++17 -Wall -I include -I "C:/msys64/mingw64/include" -DWIN32_LEAN_AND_MEAN -DCURL_STATICLIB
+LIBS     = -L "C:/msys64/mingw64/lib" -lcurl -lws2_32 -lwldap32 -lssl -lcrypto -lzstd -lbrotlidec -lbrotlicommon -lwinmm
+SRC_DIR  = src
 BUILD_DIR = build
 TARGET = galaxias.exe
 

@@ -7,7 +7,7 @@
  *            cargarMatrizAdyacencia, imprimirGrafo
  * Creado: 2026
  * Ultima modificacion: 2026
- * Autores: <integrantes>
+ * Autores: <Jorge Ulate>
  */
 #ifndef GRAPH_H
 #define GRAPH_H

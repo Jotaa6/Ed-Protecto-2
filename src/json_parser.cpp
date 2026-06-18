@@ -9,11 +9,9 @@
  * Estructuras: ninguna propia
  * Creado: 2026
  * Ultima modificacion: 2026
- * Autores: <integrantes>
+ * Autores: <Jorge Ulate>
  */
 #include "../include/json_parser.h"
-
-// ── Capa 1 — extractores crudos ───────────────────────────────────────────
 
 /**
  * @brief  Extrae valor string para una clave en un objeto JSON plano
@@ -225,8 +223,6 @@ void extractNestedArray(const char* json, const char* key,
     result[len] = '\0';
 }
 
-// ── Capa 2 — un parser por struct ─────────────────────────────────────────
-
 /**
  * @brief  Parsea un objeto JSON en Galaxy
  *         Campos: id, codigo, nombre, tipo, x, y, z
@@ -314,7 +310,6 @@ Trip* parseViaje(const char* jsonObject) {
     return t;
 }
 
-// ── Capa 3 — una funcion por endpoint ─────────────────────────────────────
 
 /**
  * @brief  Parsea GET /galaxias en lista enlazada de Galaxy

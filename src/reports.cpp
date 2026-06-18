@@ -146,3 +146,13 @@ void generarReporteEstadisticas() {
     escribirPie(archivo);
     cerrarArchivo(archivo, "estadisticas.txt");
 }
+
+/**
+ * @brief  Genera los tres reportes del sistema consecutivamente
+ * @return void
+ */
+void generarTodosLosReportes() {
+    generarReporteRutasCortas();
+    generarReporteRutaOptimizada();
+    generarReporteEstadisticas();
+}

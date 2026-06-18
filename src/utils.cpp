@@ -2,13 +2,17 @@
  * Archivo: utils.cpp
  * Descripcion: Implementacion de funciones utilitarias compartidas
  * Estructuras: ninguna propia
- * Funciones: pedirEntero, pedirCadena, confirmarAccion, getCurrentTimestamp,
- *            findGalaxyById, findShipById, findEdgeById, findTripById
+ * Funciones: pedirEntero, pedirCadena, pedirFloat, confirmarAccion,
+ *            getCurrentTimestamp, findGalaxyById, findShipById,
+ *            findEdgeById, findTripById, playAudio, freeAll
  * Creado: 2026
  * Ultima modificacion: 2026
- * Autores: <integrantes>
+ * Autores: <Jorge Ulate>
  */
 #include "../include/utils.h"
+#include "../include/graph.h"   // para acceder a grafo, Vertice, Arco
+#include <windows.h>
+#include <mmsystem.h>
 
 Galaxy* globalGalaxias = nullptr;
 Ship*   globalShips    = nullptr;
@@ -45,6 +49,26 @@ void pedirCadena(const char* mensaje, char* result, int maxLen) {
         cin.getline(result, maxLen);
         if (strlen(result) > 0) return;
         cout << "El campo no puede estar vacio." << endl;
+    }
+}
+
+/**
+ * @brief  Lee un numero decimal de cin, repite hasta que se ingrese un valor valido
+ * @param  mensaje  prompt a mostrar al usuario
+ * @return numero decimal valido ingresado por el usuario
+ */
+float pedirFloat(const char* mensaje) {
+    float valor;
+    while (true) {
+        cout << mensaje;
+        cin >> valor;
+        if (cin.good()) {
+            cin.ignore(1000, '\n');
+            return valor;
+        }
+        cin.clear();
+        cin.ignore(1000, '\n');
+        cout << "Entrada invalida. Ingrese un numero." << endl;
     }
 }
 
@@ -129,14 +153,58 @@ Trip* findTripById(string id) {
     return nullptr;
 }
 
-#include <windows.h>
-#include <mmsystem.h>
 
 /**
- * @brief  Reproduce un archivo WAV de forma asíncrona (no bloquea el programa)
- * @param  filename  nombre del archivo .wav
+ * @brief  Reproduce un archivo WAV de forma asíncrona usando PlaySound
+ * @param  filename  nombre del archivo .wav (ej. "Guardianes.wav")
  * @return void
  */
 void playAudio(const char* filename) {
     PlaySound(TEXT(filename), NULL, SND_FILENAME | SND_ASYNC);
+}
+
+/**
+ * @brief  Libera toda la memoria dinámica de las listas globales y del grafo
+ * @return void
+ */
+void freeAll() {
+    // Liberar galaxias
+    while (globalGalaxias != nullptr) {
+        Galaxy* tmp = globalGalaxias;
+        globalGalaxias = globalGalaxias->siguiente;
+        delete tmp;
+    }
+    // Liberar naves (los viajes ya están en la lista global de trips)
+    while (globalShips != nullptr) {
+        Ship* tmp = globalShips;
+        globalShips = globalShips->siguiente;
+        delete tmp;
+    }
+    // Liberar rutas (edges)
+    while (globalEdges != nullptr) {
+        Edge* tmp = globalEdges;
+        globalEdges = globalEdges->siguiente;
+        delete tmp;
+    }
+    // Liberar viajes
+    while (globalTrips != nullptr) {
+        Trip* tmp = globalTrips;
+        globalTrips = globalTrips->siguiente;
+        delete tmp;
+    }
+    // Liberar grafo (vértices y arcos)
+    extern Vertice* grafo;
+    Vertice* v = grafo;
+    while (v != nullptr) {
+        Arco* a = v->subListaArcos;
+        while (a != nullptr) {
+            Arco* sig = a->sigA;
+            delete a;
+            a = sig;
+        }
+        Vertice* sigV = v->sigV;
+        delete v;
+        v = sigV;
+    }
+    grafo = nullptr;
 }

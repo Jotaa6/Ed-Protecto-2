@@ -5,7 +5,7 @@
  * Funciones: loadAll, printLoadStep
  * Creado: 2026
  * Ultima modificacion: 2026
- * Autores: <integrantes>
+ * Autores: <Jorge Ulate>
  */
 #ifndef DATA_LOADER_H
 #define DATA_LOADER_H
