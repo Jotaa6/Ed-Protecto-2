@@ -99,4 +99,13 @@ void eliminarViaje(string id);
 /** @brief Busca viaje por id. @param id id a buscar. @return void* a Trip o nullptr */
 void* buscarViajePorId(string id);
 
+// Funciones de detalle para imprimir un solo registro
+
+void printGalaxyDetail(void* item);
+
+void printShipDetail(void* item);
+
+void printEdgeDetail(void* item);
+
+void printTripDetail(void* item);
 #endif

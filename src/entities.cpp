@@ -3,10 +3,10 @@
  * Descripcion: Implementacion de las funciones CRUD especificas por entidad
  * Estructuras: ninguna propia
  * Funciones: listarGalaxias, agregarGalaxia, editarGalaxia, eliminarGalaxia,
- *            buscarGalaxyPorId, listarNaves, agregarNave, editarNave,
- *            eliminarNave, buscarNavePorId, listarRutas, agregarRuta,
- *            editarRuta, eliminarRuta, buscarRutaPorId, listarViajes,
- *            registrarViaje, editarViaje, eliminarViaje, buscarViajePorId
+ *            buscarGalaxyPorId, printGalaxyDetail,
+ *            listarNaves, agregarNave, editarNave, eliminarNave, buscarNavePorId, printShipDetail,
+ *            listarRutas, agregarRuta, editarRuta, eliminarRuta, buscarRutaPorId, printEdgeDetail,
+ *            listarViajes, registrarViaje, editarViaje, eliminarViaje, buscarViajePorId, printTripDetail
  * Creado: 2026
  * Ultima modificacion: 2026
  * Autores: José Pablo Barrates

@@ -1,6 +1,6 @@
 /*
  * Archivo: crud.h
- * Descripcion: Motor CRUD generico con punteros a funciones
+ * Descripcion: Motor CRUD generico usando punteros a funciones
  * Estructuras: CrudConfig
  * Funciones: runCrud, promptAndValidateId
  * Creado: 7/6/2026
@@ -12,17 +12,19 @@
 
 #include <iostream>
 #include <string>
-#include "utils.h"
+#include "../include/utils.h"
+
 using namespace std;
 
 /**
  * @brief  Struct de configuracion que define el comportamiento CRUD para una entidad
- * @field  entityName  nombre para mostrar e.g. "Galaxia", "Nave"
- * @field  listAll     funcion que imprime todos los registros
- * @field  add         funcion que solicita al usuario e inserta un registro
- * @field  edit        funcion que edita un registro por id string
- * @field  remove      funcion que elimina un registro por id string
- * @field  findById    funcion que busca un registro por id string
+ * @field  entityName   nombre para mostrar e.g. Galaxia, Nave
+ * @field  listAll      funcion que imprime todos los registros
+ * @field  add          funcion que solicita al usuario e inserta un registro
+ * @field  edit         funcion que edita un registro por id
+ * @field  remove       funcion que elimina un registro por id
+ * @field  findById     funcion que busca un registro por id, retorna void*
+ * @field  printDetail  funcion que imprime el detalle de un registro (opcional)
  */
 struct CrudConfig {
     const char* entityName;
@@ -31,6 +33,7 @@ struct CrudConfig {
     void  (*edit)(string id);
     void  (*remove)(string id);
     void* (*findById)(string id);
+    void  (*printDetail)(void* item);   // <-- NUEVO
 };
 
 /**
@@ -43,7 +46,7 @@ struct CrudConfig {
 void runCrud(CrudConfig config);
 
 /**
- * @brief  Solicita un id al usuario y valida que exista en la lista de la entidad
+ * @brief  Solicita y valida un id de forma generica
  * @param  config  CrudConfig de la entidad siendo buscada
  * @return id ingresado por el usuario, o "" si no se encuentra
  */
