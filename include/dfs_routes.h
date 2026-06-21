@@ -26,7 +26,7 @@ using namespace std;
  * @param  count   puntero al contador de caminos encontrados como float
  * @return void
  */
-void dfsTodasLasRutas(Vertice* origen, string ruta, float costo, float* count);
+void dfsTodasLasRutas(Vertice* origen, string ruta, float costo, float* count, ofstream* archivo = nullptr);
 
 /**
  * @brief  Punto de entrada para la consulta de todas las rutas
