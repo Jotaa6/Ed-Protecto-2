@@ -4,7 +4,7 @@
  * Estructuras: ninguna propia
  * Funciones: dfsTodasLasRutas, mostrarTodasLasRutas
  * Creado: 1/6/2026
- * Ultima modificacion: 2026
+ * Ultima modificacion: 21/6/2026
  * Autores: Santiago Eloy Céspedes Mora
  */
 #ifndef DFS_ROUTES_H
@@ -12,27 +12,29 @@
 
 #include <string>
 #include <iostream>
+#include <fstream>
 #include "graph.h"
 #include "galaxy.h"
 using namespace std;
 
 /**
  * @brief  Encuentra e imprime recursivamente todos los caminos desde origen
- *         Usa DFS
- *         Marca visitado=true, recorre arcos, recursa, luego pone visitado=false
+ *         Usa DFS con backtracking. Escribe directamente en un archivo si se proporciona.
  * @param  origen  vertice actual siendo visitado
  * @param  ruta    string acumulando el camino actual para mostrar
- * @param  costo   costo acumulado del camino actual como float
- * @param  count   puntero al contador de caminos encontrados como float
+ * @param  costo   costo acumulado del camino actual
+ * @param  count   puntero al contador de caminos encontrados
+ * @param  archivo puntero a ofstream donde se escribiran las rutas (opcional)
  * @return void
  */
-void dfsTodasLasRutas(Vertice* origen, string ruta, float costo, float* count, ofstream* archivo = nullptr);
+void dfsTodasLasRutas(Vertice* origen, string ruta, float costo, int* count, ofstream* archivo = nullptr);
 
 /**
  * @brief  Punto de entrada para la consulta de todas las rutas
  *         Llama desmarcarVertices() y luego dfsTodasLasRutas()
- *         Limita la salida a los primeros 50 caminos
- * @param  galaxyId  id string de la galaxia origen
+ *         Guarda TODAS las rutas en /output/todasLasRutas.txt
+ *         No imprime las rutas en terminal, solo un mensaje de confirmacion.
+ * @param  galaxyId  id de la galaxia origen
  * @return void
  */
 void mostrarTodasLasRutas(string galaxyId);
