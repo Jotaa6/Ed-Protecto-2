@@ -2,17 +2,17 @@
  * Archivo: crud.cpp
  * Descripcion: Implementacion del motor CRUD generico
  * Estructuras: CrudConfig
- * Funciones: runCrud, promptAndValidateId
+ * Funciones: promptAndValidateId, runCrud
  * Creado: 7/6/2026
- * Ultima modificacion: 2026
- * Autores: Santiago Eloy Céspedes Mora
+ * Ultima modificacion: 21/6/2026
+ * Autores: Santiago Eloy Céspedes Mora, José Pablo Barrantes
  */
 #include "../include/crud.h"
 
 /**
- * @brief  Solicita un id al usuario y valida que exista en la lista de la entidad
- * @param  config  CrudConfig de la entidad siendo buscada
- * @return id ingresado por el usuario, o "" si no se encuentra
+ * @brief  Solicita un ID al usuario y valida que exista en la lista de la entidad
+ * @param  config  configuracion CRUD de la entidad
+ * @return ID ingresado (string) si existe, cadena vacia si no se encuentra
  */
 string promptAndValidateId(CrudConfig config) {
     char buf[100];
@@ -20,8 +20,7 @@ string promptAndValidateId(CrudConfig config) {
     string id = string(buf);
 
     if (config.findById == nullptr) {
-        cout << "No existe funcion de busqueda para "
-             << config.entityName << "." << endl;
+        cout << "No existe funcion de busqueda para " << config.entityName << "." << endl;
         return "";
     }
 
@@ -35,9 +34,8 @@ string promptAndValidateId(CrudConfig config) {
 
 /**
  * @brief  Ejecuta el submenu CRUD generico para cualquier entidad
- *         Contiene el loop do-while, switch y try-catch por opcion
- *         Escrito una vez, usado por todas las entidades
- * @param  config  struct CrudConfig con nombre de entidad y punteros a funciones
+ *         Contiene loop do-while, switch y try-catch por opcion
+ * @param  config  configuracion CRUD de la entidad
  * @return void
  */
 void runCrud(CrudConfig config) {
@@ -56,10 +54,8 @@ void runCrud(CrudConfig config) {
         switch (opcion) {
             case 1:
                 try {
-                    if (config.listAll != nullptr)
-                        config.listAll();
-                    else
-                        cout << "Funcion listar no disponible." << endl;
+                    if (config.listAll != nullptr) config.listAll();
+                    else cout << "Funcion listar no disponible." << endl;
                 } catch (...) {
                     cout << "Ocurrio un error al listar." << endl;
                 }
@@ -67,10 +63,8 @@ void runCrud(CrudConfig config) {
 
             case 2:
                 try {
-                    if (config.add != nullptr)
-                        config.add();
-                    else
-                        cout << "Funcion agregar no disponible." << endl;
+                    if (config.add != nullptr) config.add();
+                    else cout << "Funcion agregar no disponible." << endl;
                 } catch (...) {
                     cout << "Ocurrio un error al agregar." << endl;
                 }
@@ -105,9 +99,17 @@ void runCrud(CrudConfig config) {
             case 5:
                 try {
                     string id = promptAndValidateId(config);
-                    if (id != "")
-                        cout << config.entityName
-                             << " encontrado correctamente." << endl;
+                    if (id != "") {
+                        void* item = config.findById(id);
+                        if (item != nullptr) {
+                            cout << config.entityName << " encontrado:" << endl;
+                            if (config.printDetail != nullptr) {
+                                config.printDetail(item);
+                            } else {
+                                cout << "(No hay funcion de detalle para esta entidad.)" << endl;
+                            }
+                        }
+                    }
                 } catch (...) {
                     cout << "Ocurrio un error al buscar." << endl;
                 }
