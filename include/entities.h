@@ -24,6 +24,11 @@
 #include "graph.h"
 #include "utils.h"
 using namespace std;
+// Funciones de detalle para impresion individual
+void printGalaxyDetail(void* item);
+void printShipDetail(void* item);
+void printEdgeDetail(void* item);
+void printTripDetail(void* item);
 
 // Configuraciones CrudConfig para cada entidad
 extern CrudConfig galaxyConfig;
