@@ -9,6 +9,7 @@
  */
 #include "../include/dfs_routes.h"
 #include "../include/utils.h"
+#include "../include/file_io.h"
 
 /**
  * @brief  Encuentra e imprime recursivamente todos los caminos desde origen
@@ -20,38 +21,39 @@
  * @param  count   puntero al contador de caminos encontrados
  * @return void
  */
-void dfsTodasLasRutas(Vertice* origen, string ruta, float costo, float* count) {
-    if (origen == nullptr || *count >= 50) {
-        return;
-    }
+void dfsTodasLasRutas(Vertice* origen, string ruta, float costo, float* count, ofstream* archivo) {
+    if (origen == nullptr || *count >= 50) return;
     origen->visitado = true;
     Arco* arco = origen->subListaArcos;
-    // Si no tiene arcos de salida, imprime la ruta actual
+
     if (arco == nullptr) {
         (*count)++;
-        cout << *count << ". " << ruta << " | Costo: " << costo << endl;
+        string linea = to_string((int)*count) + ". " + ruta + " | Costo: " + to_string(costo);
+        cout << linea << endl;
+        if (archivo != nullptr && archivo->is_open()) {
+            *archivo << linea << endl;
+        }
         origen->visitado = false;
         return;
     }
 
-    // Recorre todos los arcos del vertice actual
     while (arco != nullptr && *count < 50) {
         Vertice* vecino = buscarVertice(arco->destinoId);
         if (vecino != nullptr && vecino->visitado == false) {
             Galaxy* galaxyVecino = findGalaxyById(vecino->galaxyId);
-            string nombreVecino = vecino->galaxyId;
-            if (galaxyVecino != nullptr) {
-                nombreVecino = galaxyVecino->name;
-            }
+            string nombreVecino = (galaxyVecino != nullptr) ? galaxyVecino->name : vecino->galaxyId;
             string nuevaRuta = ruta + " > " + nombreVecino;
-            float nuevoCosto = costo + (float)arco->costo;
+            float nuevoCosto = costo + arco->costo;
             (*count)++;
-            cout << *count << ". " << nuevaRuta << " | Costo: " << nuevoCosto << endl;
-            dfsTodasLasRutas(vecino, nuevaRuta, nuevoCosto, count);
+            string linea = to_string((int)*count) + ". " + nuevaRuta + " | Costo: " + to_string(nuevoCosto);
+            cout << linea << endl;
+            if (archivo != nullptr && archivo->is_open()) {
+                *archivo << linea << endl;
+            }
+            dfsTodasLasRutas(vecino, nuevaRuta, nuevoCosto, count, archivo);
         }
         arco = arco->sigA;
     }
-    // Backtracking
     origen->visitado = false;
 }
 
@@ -72,19 +74,38 @@ void mostrarTodasLasRutas(string galaxyId) {
         cout << "Sin conexiones." << endl;
         return;
     }
+
     desmarcarVertices();
     Galaxy* galaxyOrigen = findGalaxyById(origen->galaxyId);
-    string nombreOrigen = origen->galaxyId;
-    if (galaxyOrigen != nullptr) {
-        nombreOrigen = galaxyOrigen->name;
-    }
+    string nombreOrigen = (galaxyOrigen != nullptr) ? galaxyOrigen->name : origen->galaxyId;
+
     float count = 0;
     cout << "\n=== TODAS LAS RUTAS DESDE " << nombreOrigen << " ===" << endl;
-    dfsTodasLasRutas(origen, nombreOrigen, 0, &count);
+
+    // Abrir archivo
+    ofstream archivo;
+    if (abrirArchivo(archivo, "todasLasRutas.txt")) {
+        string titulo = "TODAS LAS RUTAS DESDE " + nombreOrigen;
+        escribirEncabezado(archivo, titulo.c_str());
+        archivo << "Galaxia origen: " << nombreOrigen << " (ID: " << galaxyId << ")" << endl;
+        archivo << "========================================" << endl;
+    }
+
+    dfsTodasLasRutas(origen, nombreOrigen, 0, &count, (archivo.is_open() ? &archivo : nullptr));
+
     if (count == 0) {
-        cout << "La galaxia no tiene rutas de salida." << endl;
+        string msg = "La galaxia no tiene rutas de salida.";
+        cout << msg << endl;
+        if (archivo.is_open()) archivo << msg << endl;
     }
     if (count >= 50) {
-        cout << "\nSe mostraron solo los primeros 50 caminos." << endl;
+        string msg = "\nSe mostraron solo los primeros 50 caminos.";
+        cout << msg << endl;
+        if (archivo.is_open()) archivo << msg << endl;
+    }
+
+    if (archivo.is_open()) {
+        escribirPie(archivo);
+        cerrarArchivo(archivo, "todasLasRutas.txt");
     }
 }
