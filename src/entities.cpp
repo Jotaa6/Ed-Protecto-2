@@ -104,7 +104,7 @@ void agregarGalaxia() {
 }
 
 /**
- * @brief  Edita los atributos de una galaxia existente (nombre, tipo, coordenadas)
+ * @brief  Edita los atributos de una galaxia (nombre, codigo, tipo, coordenadas)
  * @param  id  ID de la galaxia a editar
  * @return void
  */
@@ -115,8 +115,26 @@ void editarGalaxia(string id) {
         return;
     }
     char buffer[100];
+
     pedirCadena("Nuevo nombre: ", buffer, 100);
     galaxy->name = buffer;
+
+    pedirCadena("Nuevo codigo: ", buffer, 100);
+    // Verificar que el nuevo código no esté en uso por otra galaxia
+    Galaxy* temp = globalGalaxias;
+    bool codigoUsado = false;
+    while (temp != nullptr) {
+        if (temp->id != id && temp->code == string(buffer)) {
+            codigoUsado = true;
+            break;
+        }
+        temp = temp->siguiente;
+    }
+    if (codigoUsado) {
+        cout << "El codigo ya esta en uso por otra galaxia. No se aplicaron cambios." << endl;
+        return;
+    }
+    galaxy->code = string(buffer);
 
     pedirCadena("Nuevo tipo: ", buffer, 100);
     galaxy->type = buffer;
@@ -425,7 +443,7 @@ void agregarRuta() {
 }
 
 /**
- * @brief  Edita todos los atributos de una ruta (tipo, costo, tiempo, activa)
+ * @brief  Edita todos los atributos de una ruta (origen, destino, tipo, costo, tiempo, activa)
  * @param  id  ID de la ruta a editar
  * @return void
  */
@@ -437,6 +455,34 @@ void editarRuta(string id) {
     }
 
     char buffer[100];
+
+    // Nuevo origen
+    pedirCadena("Nuevo ID galaxia origen: ", buffer, 100);
+    string nuevoOrigen = string(buffer);
+    if (findGalaxyById(nuevoOrigen) == nullptr) {
+        cout << "La galaxia origen no existe. No se aplicaron cambios." << endl;
+        return;
+    }
+
+    // Nuevo destino
+    pedirCadena("Nuevo ID galaxia destino: ", buffer, 100);
+    string nuevoDestino = string(buffer);
+    if (findGalaxyById(nuevoDestino) == nullptr) {
+        cout << "La galaxia destino no existe. No se aplicaron cambios." << endl;
+        return;
+    }
+
+    // Eliminar arco viejo del grafo
+    eliminarArco(ruta->originId, ruta->destinationId);
+
+    // Actualizar IDs
+    ruta->originId = nuevoOrigen;
+    ruta->destinationId = nuevoDestino;
+
+    // Insertar nuevo arco
+    insertarArco(ruta->originId, ruta->destinationId, ruta->cost);
+
+    // Resto de atributos
     pedirCadena("Nuevo tipo: ", buffer, 100);
     ruta->tipo = buffer;
 
@@ -452,7 +498,9 @@ void editarRuta(string id) {
 
     ruta->activa = confirmarAccion("La ruta esta activa?");
 
+    // Actualizar costo en el grafo (ya con nuevo origen/destino)
     actualizarCostoArco(ruta->originId, ruta->destinationId, ruta->cost);
+
     cout << "\nRuta editada correctamente." << endl;
 }
 
@@ -608,7 +656,7 @@ void registrarViaje() {
 }
 
 /**
- * @brief  Edita la fecha, costo y estado de exito de un viaje
+ * @brief  Edita todos los atributos de un viaje (nave, ruta, fecha, costo, exitoso)
  * @param  id  ID del viaje a editar
  * @return void
  */
@@ -618,7 +666,52 @@ void editarViaje(string id) {
         cout << "\nViaje no encontrado." << endl;
         return;
     }
+
     char buffer[100];
+
+    // Nueva nave
+    pedirCadena("Nuevo ID de la nave: ", buffer, 100);
+    string nuevaNave = string(buffer);
+    Ship* nave = findShipById(nuevaNave);
+    if (nave == nullptr) {
+        cout << "La nave no existe. No se aplicaron cambios." << endl;
+        return;
+    }
+
+    // Nueva ruta
+    pedirCadena("Nuevo ID de la ruta: ", buffer, 100);
+    string nuevaRuta = string(buffer);
+    Edge* ruta = findEdgeById(nuevaRuta);
+    if (ruta == nullptr) {
+        cout << "La ruta no existe. No se aplicaron cambios." << endl;
+        return;
+    }
+
+    // Eliminar viaje del historial anterior de la nave (si es diferente a la nueva)
+    Ship* naveAnterior = findShipById(viaje->shipId);
+    if (naveAnterior != nullptr && naveAnterior->id != nuevaNave) {
+        Trip* hActual = naveAnterior->tripHistory;
+        Trip* hAnterior = nullptr;
+        while (hActual != nullptr && hActual->id != id) {
+            hAnterior = hActual;
+            hActual = hActual->siguiente;
+        }
+        if (hActual != nullptr) {
+            if (hAnterior == nullptr) naveAnterior->tripHistory = hActual->siguiente;
+            else hAnterior->siguiente = hActual->siguiente;
+        }
+    }
+
+    // Actualizar datos del viaje
+    viaje->shipId = nuevaNave;
+    viaje->rutaId = nuevaRuta;
+    viaje->naveNombre = nave->name;
+
+    Galaxy* origen = findGalaxyById(ruta->originId);
+    Galaxy* destino = findGalaxyById(ruta->destinationId);
+    if (origen != nullptr) viaje->origenNombre = origen->name;
+    if (destino != nullptr) viaje->destinoNombre = destino->name;
+
     pedirCadena("Nueva fecha: ", buffer, 100);
     viaje->date = buffer;
 
@@ -628,6 +721,16 @@ void editarViaje(string id) {
     } while (viaje->cost <= 0);
 
     viaje->exitoso = confirmarAccion("El viaje fue exitoso?");
+
+    // Si la nave nueva es diferente a la anterior, agregar al historial de la nueva nave
+    if (nave->id != (naveAnterior ? naveAnterior->id : "")) {
+        if (nave->tripHistory == nullptr) nave->tripHistory = viaje;
+        else {
+            Trip* temp = nave->tripHistory;
+            while (temp->siguiente != nullptr) temp = temp->siguiente;
+            temp->siguiente = viaje;
+        }
+    }
 
     cout << "\nViaje editado correctamente." << endl;
 }
