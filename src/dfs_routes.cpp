@@ -14,7 +14,8 @@
 /**
  * @brief  Encuentra recursivamente todos los caminos desde origen
  *         Usa DFS con backtracking. Escribe en archivo si se proporciona.
- *         SIN LIMITE DE 50 RUTAS (muestra TODAS).
+ *         Imprime la ruta en cada nodo visitado (incluyendo el origen),
+ *         generando TODAS las rutas posibles (subcaminos).
  * @param  origen  vertice actual
  * @param  ruta    camino acumulado
  * @param  costo   costo acumulado
@@ -25,20 +26,17 @@
 void dfsTodasLasRutas(Vertice* origen, string ruta, float costo, int* count, ofstream* archivo) {
     if (origen == nullptr) return;
 
+    // Marcar visitado
     origen->visitado = true;
-    Arco* arco = origen->subListaArcos;
 
-    // Caso base: no tiene arcos de salida -> es una ruta completa
-    if (arco == nullptr) {
+    // Caso base: imprimir la ruta actual (incluye el origen y todos los subcaminos)
+    if (archivo != nullptr && archivo->is_open()) {
         (*count)++;
-        if (archivo != nullptr && archivo->is_open()) {
-            *archivo << (*count) << ". " << ruta << " | Costo: " << costo << endl;
-        }
-        origen->visitado = false;
-        return;
+        *archivo << (*count) << ". " << ruta << " | Costo: " << costo << endl;
     }
 
     // Recorrer todos los arcos del vertice actual (SIN LIMITE)
+    Arco* arco = origen->subListaArcos;
     while (arco != nullptr) {
         Vertice* vecino = buscarVertice(arco->destinoId);
         if (vecino != nullptr && vecino->visitado == false) {
@@ -92,6 +90,7 @@ void mostrarTodasLasRutas(string galaxyId) {
     archivo << "========================================" << endl;
 
     int count = 0;
+    // Iniciar DFS (imprime el origen y todos los subcaminos)
     dfsTodasLasRutas(origen, nombreOrigen, 0, &count, &archivo);
 
     // Escribir pie y total
