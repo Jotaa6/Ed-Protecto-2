@@ -2,10 +2,10 @@
  * Archivo: crud.h
  * Descripcion: Motor CRUD generico usando punteros a funciones
  * Estructuras: CrudConfig
- * Funciones: runCrud, promptAndValidateId
+ * Funciones: promptAndValidateId, runCrud
  * Creado: 7/6/2026
- * Ultima modificacion: 2026
- * Autores: Santiago Eloy Céspedes Mora
+ * Ultima modificacion: 21/6/2026
+ * Autores: Santiago Eloy Céspedes Mora, José Pablo Barrantes
  */
 #ifndef CRUD_H
 #define CRUD_H
@@ -17,14 +17,14 @@
 using namespace std;
 
 /**
- * @brief  Struct de configuracion que define el comportamiento CRUD para una entidad
- * @field  entityName   nombre para mostrar e.g. Galaxia, Nave
+ * @brief  Configuracion CRUD para una entidad (Galaxia, Nave, Ruta, Viaje)
+ * @field  entityName   nombre de la entidad (ej. "Galaxia")
  * @field  listAll      funcion que imprime todos los registros
- * @field  add          funcion que solicita al usuario e inserta un registro
- * @field  edit         funcion que edita un registro por id
- * @field  remove       funcion que elimina un registro por id
- * @field  findById     funcion que busca un registro por id, retorna void*
- * @field  printDetail  funcion que imprime el detalle de un registro (opcional)
+ * @field  add          funcion que agrega un nuevo registro
+ * @field  edit         funcion que edita un registro por ID
+ * @field  remove       funcion que elimina un registro por ID
+ * @field  findById     funcion que busca un registro por ID y devuelve void*
+ * @field  printDetail  funcion que imprime los detalles de un registro (void*)
  */
 struct CrudConfig {
     const char* entityName;
@@ -33,23 +33,22 @@ struct CrudConfig {
     void  (*edit)(string id);
     void  (*remove)(string id);
     void* (*findById)(string id);
-    void  (*printDetail)(void* item);   // <-- NUEVO
+    void  (*printDetail)(void* item);
 };
 
 /**
+ * @brief  Solicita un ID al usuario y valida que exista en la lista de la entidad
+ * @param  config  configuracion CRUD de la entidad
+ * @return ID ingresado (string) si existe, cadena vacia si no se encuentra
+ */
+string promptAndValidateId(CrudConfig config);
+
+/**
  * @brief  Ejecuta el submenu CRUD generico para cualquier entidad
- *         Contiene el loop do-while, switch y try-catch por opcion
- *         Escrito una vez, usado por todas las entidades
- * @param  config  struct CrudConfig con nombre de entidad y punteros a funciones
+ *         Contiene loop do-while, switch y try-catch por opcion
+ * @param  config  configuracion CRUD de la entidad
  * @return void
  */
 void runCrud(CrudConfig config);
-
-/**
- * @brief  Solicita y valida un id de forma generica
- * @param  config  CrudConfig de la entidad siendo buscada
- * @return id ingresado por el usuario, o "" si no se encuentra
- */
-string promptAndValidateId(CrudConfig config);
 
 #endif
