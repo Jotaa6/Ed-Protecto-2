@@ -36,7 +36,6 @@ extern CrudConfig shipConfig;
 extern CrudConfig routeConfig;
 extern CrudConfig tripConfig;
 
-// ── Galaxy ─────────────────────────────────────────────────────────────────
 
 /** @brief Imprime todas las galaxias de la lista global. @return void */
 void listarGalaxias();
@@ -53,7 +52,6 @@ void eliminarGalaxia(string id);
 /** @brief Busca galaxia por id. @param id id a buscar. @return void* a Galaxy o nullptr */
 void* buscarGalaxyPorId(string id);
 
-// ── Ship ───────────────────────────────────────────────────────────────────
 
 /** @brief Imprime todas las naves. @return void */
 void listarNaves();
@@ -70,7 +68,6 @@ void eliminarNave(string id);
 /** @brief Busca nave por id. @param id id a buscar. @return void* a Ship o nullptr */
 void* buscarNavePorId(string id);
 
-// ── Route ──────────────────────────────────────────────────────────────────
 
 /** @brief Imprime todas las rutas. @return void */
 void listarRutas();
@@ -87,7 +84,6 @@ void eliminarRuta(string id);
 /** @brief Busca ruta por id. @param id id a buscar. @return void* a Edge o nullptr */
 void* buscarRutaPorId(string id);
 
-// ── Trip ───────────────────────────────────────────────────────────────────
 
 /** @brief Imprime todos los viajes. @return void */
 void listarViajes();
