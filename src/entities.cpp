@@ -13,7 +13,7 @@
  */
 #include "../include/entities.h"
 
-// ==================== GALAXIAS ====================
+
 
 /**
  * @brief  Imprime todas las galaxias almacenadas en memoria
@@ -179,8 +179,6 @@ void* buscarGalaxyPorId(string id) {
     return findGalaxyById(id);
 }
 
-// ==================== NAVES ====================
-
 /**
  * @brief  Imprime todas las naves almacenadas en memoria
  * @return void
@@ -340,8 +338,6 @@ void eliminarNave(string id) {
 void* buscarNavePorId(string id) {
     return findShipById(id);
 }
-
-// ==================== RUTAS ====================
 
 /**
  * @brief  Imprime todas las rutas almacenadas en memoria
@@ -537,7 +533,7 @@ void* buscarRutaPorId(string id) {
     return findEdgeById(id);
 }
 
-// ==================== VIAJES ====================
+
 
 /**
  * @brief  Imprime todos los viajes almacenados en memoria
@@ -782,7 +778,6 @@ void* buscarViajePorId(string id) {
     return findTripById(id);
 }
 
-// ==================== CONFIGURACIONES CRUD ====================
 
 CrudConfig galaxyConfig = {
     "Galaxia",
